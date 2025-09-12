@@ -5,6 +5,7 @@ import { RoomMembersComponent } from './components/room-members/room-members.com
 import { RoomPaymentsComponent } from "./components/room-payments/room-payments.component";
 import { PaymentComponent } from "./components/payment/payment.component";
 import { PaymentButtonComponent } from "./components/payment-button/payment-button.component";
+import { ErrorService } from './services/error.service';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ export class AppComponent {
 
   showMembers = signal(false)
 
-  constructor(public stateService: StateService){
+  constructor(public stateService: StateService, public errorService: ErrorService){
     this.stateService.init()
   }
 
