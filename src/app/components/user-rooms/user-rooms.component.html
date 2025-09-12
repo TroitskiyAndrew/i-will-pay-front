@@ -1,0 +1,4 @@
+@for (roomId of this.stateService.roomIds(); track roomId) {
+  <app-room-button [roomId]="roomId" (click)="stateService.roomId.set(roomId)"></app-room-button>
+}
+<app-new-item (newItem)="createRoom($event)"></app-new-item>

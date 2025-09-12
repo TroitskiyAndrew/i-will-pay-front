@@ -1,0 +1,15 @@
+<div class="button" (click)="toggleShares()">
+  <div class="payment__state">
+    @if (state()?.unchecked) {
+      <mat-icon class="warning">help</mat-icon>
+    }
+    @if ( payment()?.payer === this.stateService.user().id &&  payment()?.amount !== payment()?.shared) {
+      <mat-icon class="warning">error_outline</mat-icon>
+    }
+  </div>
+  <div class="payment__comment"> {{payment()?.comment || ''}}</div>
+  <div class="payment__balance"> {{balance()}}</div>
+</div>
+@if(showShares()){
+  <app-payment [paymentId]="paymentId()" (done)="this.toggleShares()"></app-payment>
+}

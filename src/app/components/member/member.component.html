@@ -1,0 +1,12 @@
+@if (member()) {
+  <div [ngClass]="{member: true, 'not-payer': member()!.userId !== member()!.payer}">{{member()?.name}}</div>
+  @if (member()?.userId !== stateService.user().id) {
+    <div class="actions">
+      @if (member()?.payer === stateService.user().id) {
+        <button mat-fab (click)="stopPayingFor()"><mat-icon>horizontal_rule</mat-icon></button>
+      } @else {
+        <button mat-fab (click)="payFor()"><mat-icon>add</mat-icon></button>
+      }
+    </div>
+  }
+}

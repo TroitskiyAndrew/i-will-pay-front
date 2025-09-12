@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { ErrorService } from './error.service';
-import { IMember, IPayment, IRoom, IShare, IUser } from '../models/models';
+import { IDebt, IMember, IPayment, IRoom, IShare, IUser } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class ApiService {
 
   constructor(private http: HttpClient, private errorService: ErrorService) { }
 
-  handleError(error: Error){
+  handleError(error: Error) {
     this.errorService.showError(error);
   }
 
@@ -25,12 +25,12 @@ export class ApiService {
   createUser(name: string, roomId: string) {
     const url = `${environment.backendUrl}/users`;
     return this.http
-      .post<true>(url, {name, roomId})
+      .post<true>(url, { name, roomId })
       .toPromise()
       .catch(this.handleError.bind(this));
   }
 
-  getRooms(){
+  getRooms() {
     const url = `${environment.backendUrl}/rooms`;
     return this.http
       .get<IRoom[]>(url)
@@ -38,23 +38,31 @@ export class ApiService {
       .catch(this.handleError.bind(this));
   }
 
-  createRoom(name: string){
+  getRoomState(roomId: string) {
+    const url = `${environment.backendUrl}/state/${roomId}`;
+    return this.http
+      .get(url)
+      .toPromise()
+      .catch(this.handleError.bind(this)) as Promise<{ debts: IDebt[], hasUnsharedPayment: boolean, unchecked: boolean, }>;
+  }
+
+  createRoom(name: string) {
     const url = `${environment.backendUrl}/rooms`;
     return this.http
-      .post<IRoom>(url, {name})
+      .post<IRoom>(url, { name })
       .toPromise()
       .catch(this.handleError.bind(this));
   }
 
-  updateRoom(room: IRoom){
+  updateRoom(room: IRoom) {
     const url = `${environment.backendUrl}/rooms`;
     return this.http
-      .put<true>(url, {room})
+      .put<true>(url, { room })
       .toPromise()
       .catch(this.handleError.bind(this));
   }
 
-  getMembers(roomId: string){
+  getMembers(roomId: string) {
     const url = `${environment.backendUrl}/members/${roomId}`;
     return this.http
       .get<IMember[]>(url)
@@ -62,31 +70,31 @@ export class ApiService {
       .catch(this.handleError.bind(this));
   }
 
-  createMember(member: Omit<IMember, 'id'>){
+  createMember(roomId: string, name: string) {
     const url = `${environment.backendUrl}/members`;
     return this.http
-      .post<IMember>(url, {member})
+      .post<IMember>(url, { roomId, name })
       .toPromise()
       .catch(this.handleError.bind(this));
   }
 
-  updateMember(member: IMember){
+  updateMember(member: IMember) {
     const url = `${environment.backendUrl}/members`;
     return this.http
-      .put<true>(url, {member})
+      .put<true>(url, { member })
       .toPromise()
       .catch(this.handleError.bind(this));
   }
 
-  changeRole(id: string, isAdmin: boolean){
+  changeRole(id: string, isAdmin: boolean) {
     const url = `${environment.backendUrl}/role`;
     return this.http
-      .put<true>(url, {id, isAdmin})
+      .put<true>(url, { id, isAdmin })
       .toPromise()
       .catch(this.handleError.bind(this));
   }
 
-  getPayments(roomId: string){
+  getPayments(roomId: string) {
     const url = `${environment.backendUrl}/payments/${roomId}`;
     return this.http
       .get<IPayment[]>(url)
@@ -94,23 +102,23 @@ export class ApiService {
       .catch(this.handleError.bind(this));
   }
 
-  createPayment(payment: Omit<IPayment, 'id'>, shares: Omit<IShare, 'id'>[]){
+  createPayment(payment: Omit<IPayment, 'id'>, shares: Omit<IShare, 'id'>[]) {
     const url = `${environment.backendUrl}/payments`;
     return this.http
-      .post<true>(url, {payment, shares})
+      .post<true>(url, { payment, shares })
       .toPromise()
       .catch(this.handleError.bind(this));
   }
 
-  updatePayment(payment: IPayment, shares: IShare[]){
+  updatePayment(payment: IPayment, shares: IShare[]) {
     const url = `${environment.backendUrl}/payments`;
     return this.http
-      .put<true>(url, {payment, shares})
+      .put<true>(url, { payment, shares })
       .toPromise()
       .catch(this.handleError.bind(this));
   }
 
-  deletePayment(id: string){
+  deletePayment(id: string) {
     const url = `${environment.backendUrl}/payments/${id}`;
     return this.http
       .delete<true>(url)
@@ -118,7 +126,7 @@ export class ApiService {
       .catch(this.handleError.bind(this));
   }
 
-  getShares(paymentId: string){
+  getShares(paymentId: string) {
     const url = `${environment.backendUrl}/shares/${paymentId}`;
     return this.http
       .get<IShare[]>(url)
@@ -126,23 +134,23 @@ export class ApiService {
       .catch(this.handleError.bind(this));
   }
 
-  createShare(share: Omit<IShare, 'id'>){
+  createShare(share: Omit<IShare, 'id'>) {
     const url = `${environment.backendUrl}/shares`;
     return this.http
-      .post<IShare>(url, {share})
+      .post<IShare>(url, { share })
       .toPromise()
       .catch(this.handleError.bind(this));
   }
 
-  updateShare(share: IShare){
+  updateShare(share: IShare) {
     const url = `${environment.backendUrl}/shares`;
     return this.http
-      .put<true>(url, {share})
+      .put<true>(url, { share })
       .toPromise()
       .catch(this.handleError.bind(this));
   }
 
-  deleteShare(id: string){
+  deleteShare(id: string) {
     const url = `${environment.backendUrl}/shares/${id}`;
     return this.http
       .delete<true>(url)

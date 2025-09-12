@@ -1,0 +1,10 @@
+<div class="room__state">
+  @if (state()?.unchecked) {
+    <mat-icon class="warning">help</mat-icon>
+  }
+  @if (state()?.hasUnsharedPayment) {
+    <mat-icon class="warning">error_outline</mat-icon>
+  }
+</div>
+<div class="room__name"> {{room()?.name || ''}}</div>
+<div class="room__balance"> {{state()?.balance}}</div>

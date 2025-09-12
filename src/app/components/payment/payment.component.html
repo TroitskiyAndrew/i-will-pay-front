@@ -1,0 +1,11 @@
+<div class="payment">
+  <input type="number" [formControl]="paymentForm.controls.amount">
+  <input type="date" [formControl]="paymentForm.controls.date">
+  <input type="text" [formControl]="paymentForm.controls.comment">
+</div>
+<div class="shares">
+  @for (memberId of stateService.memberIds(); track memberId) {
+    <app-member-share [memberId]="memberId" [sharesMap]="sharesMap()" (changeShare)="onShareChanged()" ></app-member-share>
+  }
+</div>
+<button [disabled]="paymentForm.invalid" (click)="savePayment()">Сохранить</button>

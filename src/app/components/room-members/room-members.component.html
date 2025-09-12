@@ -1,0 +1,8 @@
+<div (click)="toggleMembers()">Участники</div>
+@if(showMembers()){
+  @for (memberId of this.stateService.memberIds(); track memberId) {
+    <app-member [memberId]="memberId"></app-member>
+  }
+  <app-new-item (newItem)="createMember($event)"></app-new-item>
+
+}

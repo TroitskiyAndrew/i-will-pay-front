@@ -1,3 +1,3 @@
 export const environment = {
-  backendUrl: '__',
+  backendUrl: 'https://i-will-pay-back.onrender.com/',
 };

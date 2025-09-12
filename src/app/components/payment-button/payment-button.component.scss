@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  .payment {
+    &__balance{
+      margin-left: auto;
+    }
+  }
+}

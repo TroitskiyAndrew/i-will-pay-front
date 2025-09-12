@@ -1,0 +1,10 @@
+<mat-checkbox class="share__active" [formControl]="activeControl"></mat-checkbox>
+<div class="share__name">{{member()?.name}}</div>
+<button mat-fab (click)="changeShareValue(-1)">
+  <mat-icon>horizontal_rule</mat-icon>
+</button>
+<div class="share__share">{{shareControl.getRawValue()}}</div>
+<button mat-fab (click)="changeShareValue(+1)">
+  <mat-icon>add</mat-icon>
+</button>
+<input class="share__balance" type="number" [formControl]="balanceControl">
