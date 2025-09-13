@@ -14,6 +14,7 @@ export class TelegrammService {
   readonly user = this.tg?.initDataUnsafe?.user ?? null;
 
   constructor() {
+    console.log(window)
     try { this.tg?.ready?.(); this.tg?.expand?.(); } catch { }
   }
 }
