@@ -9,7 +9,7 @@ import { ErrorService } from './services/error.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RoomMembersComponent, UserRoomsComponent, RoomPaymentsComponent, PaymentButtonComponent],
+  imports: [RoomMembersComponent, UserRoomsComponent, RoomPaymentsComponent, PaymentComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
