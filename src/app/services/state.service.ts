@@ -88,17 +88,7 @@ export class StateService {
       const payments = await this.apiService.getPayments(currentRoom.id) || []
       const members = await this.apiService.getMembers(currentRoom.id) || [];
       this.members.set(members);
-      const newPayment: IPayment = {
-        id: 'new Payment',
-        roomId: this.roomId(),
-        payer: this.user().id,
-        amount: 0,
-        shared: 0,
-        comment: 'Новый платеж',
-        photos: [],
-        date: '',
-      }
-      this.payments.set([...payments, newPayment]);
+      this.payments.set(payments);
     });
     effect(async () => {
       const user = this.user();

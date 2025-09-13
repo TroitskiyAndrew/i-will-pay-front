@@ -182,7 +182,7 @@ export class PaymentComponent {
     const paymentId = this.paymentId();
     const payment = this.getPayment();
     this.done.emit(Math.random());
-    if (paymentId !== 'new Payment') {
+    if (paymentId) {
       await this.apiService.updatePayment({ id: paymentId, ...payment }, shares)
     } else {
       this.stateService.paymentStatesMap.update(paymentStatesMap => new Map([...paymentStatesMap.entries(), [paymentId, {balance: 0,  unchecked: false, amount: 0}]]))

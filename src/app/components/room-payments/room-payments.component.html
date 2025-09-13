@@ -1,9 +1,7 @@
 <div (click)="toggleMembers()">Платежи</div>
 @if(showMembers()){
   @for (paymentId of this.stateService.paymentIds(); track paymentId) {
-    @if(paymentId !== 'new Payment'){
-      <app-payment-button [paymentId]="paymentId"></app-payment-button>
-    }
+    <app-payment-button [paymentId]="paymentId"></app-payment-button>
   }
 
 }
