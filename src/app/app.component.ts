@@ -15,7 +15,6 @@ import { ErrorService } from './services/error.service';
 })
 export class AppComponent {
 
-  window = Object.keys(window);
   showMembers = signal(false)
 
   constructor(public stateService: StateService, public errorService: ErrorService){
