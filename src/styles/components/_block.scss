@@ -27,6 +27,7 @@
   }
   &--tight{
     column-gap: 0px;
+    flex-shrink: 0;
   }
 
   &--vertical {
@@ -59,6 +60,9 @@
   }
   &--short {
     width: max-content;
+  }
+  &--overflow {
+    overflow: visible;
   }
   &.red {
     color: red;
