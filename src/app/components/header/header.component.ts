@@ -1,7 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { StateService } from '../../services/state.service';
 import { ButtonComponent } from "../button/button.component";
-import { IButton } from '../../models/models';
+import { IButton, IRoomState } from '../../models/models';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,20 +12,23 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
 
-  roomState = computed(() => {
+  state = computed(() => {
     const roomStatesMap = this.stateService.roomStatesMap();
-    return roomStatesMap.get(this.stateService.roomId())
+    return [...roomStatesMap.values()].reduce<Omit<IRoomState, 'debts'>>((res, state) => {
+      if(state.unchecked){
+        res.unchecked = true;
+      }
+      if(state.hasUnsharedPayment){
+        res.hasUnsharedPayment = true;
+      }
+      res.balance += state.balance;
+      return res;
+    }, {balance: 0, unchecked: false, hasUnsharedPayment: false});
+
   });
-  unchecked = computed(() => this.roomState()?.unchecked || false);
-  hasUnsharedPayment = computed(() => this.roomState()?.hasUnsharedPayment || false);
-  balance = computed(() => {
-    if(this.roomState()){
-      return this.roomState()!.balance || 0
-    } else {
-      const states = [...this.stateService.roomStatesMap().values()];
-      return states.reduce((res, state) => res += state.balance, 0)
-    }
-  });
+  unchecked = computed(() => this.state().unchecked || false);
+  hasUnsharedPayment = computed(() => this.state().hasUnsharedPayment || false);
+  balance = computed(() => this.state().balance);
 
   warningButton: IButton = {
     icon: 'question_mark',
@@ -44,7 +47,6 @@ export class HeaderComponent {
   homeButton: IButton = {
     icon: 'person',
     action: () => this.stateService.roomId.set(''),
-    show: computed(() => Boolean(this.stateService.roomId())),
     class: 'square square--small border-less',
     disabled: signal(false),
   }

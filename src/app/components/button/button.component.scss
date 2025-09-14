@@ -12,24 +12,18 @@ button {
   }
   width: 100%;
   &.square {
-    height: 50px;
-    min-height: 50px;
-    width: 50px;
-    min-width: 50px;
-    &--small {
-      height: 30px;
+    height: 30px;
       min-height: 30px;
       width: 30px;
       min-width: 30px;
-    }
     .material-icons{
-      font-size: 30px !important;
+      font-size: 24px !important;
     }
     .mat-icon {
-      height: 30px !important;
-      min-height: 30px !important;
-      width: 30px !important;
-      min-width: 30px !important;
+      height: 24px !important;
+      min-height: 24px !important;
+      width: 24px !important;
+      min-width: 24px !important;
     }
   }
 }
