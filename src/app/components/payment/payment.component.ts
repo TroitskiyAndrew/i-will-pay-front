@@ -215,7 +215,7 @@ export class PaymentComponent {
     } else {
       await this.apiService.updatePayment({ id: paymentId, ...payment }, shares)
     }
-    // todo очищаем shares
+
     this.stateService.newPayment = getNewPayment(this.stateService.user().id);
     this.stateService.createPaymentMode.set(false);
   }
@@ -242,7 +242,7 @@ export class PaymentComponent {
     class: 'square square--small border-less red-content',
     disabled: signal(true),
   }
-  editButton: IButton = {
+  expandButton: IButton = {
     icon: 'expand_more',
     action: () => {this._editMode.update(val => {
       if(val){
@@ -254,8 +254,8 @@ export class PaymentComponent {
     class: 'square border-less',
     show: computed(() => !this.editModeInput()),
     statesMapFn: () => new Map([
-      [true, { stateClass: '', icon: 'expand_less' }],
-      [false, { stateClass: '', icon: 'expand_more' }],
+      [true, { stateClass: '', icon: 'keyboard_arrow_down' }],
+      [false, { stateClass: '', icon: 'keyboard_arrow_left' }],
     ]),
   }
 

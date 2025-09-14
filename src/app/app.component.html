@@ -14,6 +14,16 @@
       @if(!this.stateService.currentRoom()){
         <app-user-rooms class="block block--vertical block--first-vertical" ></app-user-rooms>
       } @else {
+        @if (editGroupNameMode()) {
+          <app-update-item class="block" [value]="this.stateService.currentRoom()?.name || ''" (newValue)="editGroupName($event)"></app-update-item>
+        } @else {
+          <div class="block block--whole block--close block--short">
+            <div class="block block--auto">
+              {{this.stateService.currentRoom()?.name || ''}}
+            </div>
+            <app-button class="block block--whole block--short" [button]="editGroupNameBUtton"></app-button>
+          </div>
+        }
         <app-room-members class="block block--vertical"></app-room-members>
         <app-room-payments class="block block--vertical"></app-room-payments>
         @if (!this.stateService.createPaymentMode() && this.stateService.currentRoom() != null) {

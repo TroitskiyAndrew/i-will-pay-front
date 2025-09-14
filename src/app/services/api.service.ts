@@ -30,6 +30,14 @@ export class ApiService {
       .catch(this.handleError.bind(this));
   }
 
+  updateUser(user: IUser) {
+    const url = `${environment.backendUrl}/users`;
+    return this.http
+      .put<true>(url, { user })
+      .toPromise()
+      .catch(this.handleError.bind(this));
+  }
+
   getRooms() {
     const url = `${environment.backendUrl}/rooms`;
     return this.http

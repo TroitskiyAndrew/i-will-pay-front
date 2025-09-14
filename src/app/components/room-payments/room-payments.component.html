@@ -1,8 +1,14 @@
 <div class="block block--whole block--close">
+
   <div class="block block--whole block--close block--auto">
     Платежи
   </div>
-  <app-button class="block block--whole block--last block--short" [button]="expandButton"></app-button>
+  <div class="block block--whole block--tight block--short">
+    <app-button class="block block--whole block--short" [button]="warningButton"></app-button>
+    <app-button class="block block--whole block--short" [button]="errorButton"></app-button>
+
+  </div>
+  <app-state-button class="block block--whole block--last block--short" [button]="expandButton"></app-state-button>
 </div>
 @if(showPayments()){
   @for (paymentId of this.stateService.paymentIds(); track paymentId) {

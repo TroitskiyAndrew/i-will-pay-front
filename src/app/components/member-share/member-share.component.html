@@ -1,5 +1,5 @@
 <app-state-button class="block block--whole block--close block--short" [button]="activeButton" [value]="this.activeControl.getRawValue()"></app-state-button>
-<div class="block block--whole block--close block--short">{{member()?.name}}</div>
+<div [ngClass]="{'block block--whole block--close block--short': true, 'payer': isPayer()}">{{member()?.name}}</div>
 <div class="block block--whole block--close block--short block--last share-buttons">
   <app-button class="block block--whole block--close block--short" [button]="decreaseShareButton"></app-button>
   <div class="block block--whole block--close block--short">{{shareControl.getRawValue()}}</div>

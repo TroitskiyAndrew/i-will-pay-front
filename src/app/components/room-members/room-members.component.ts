@@ -5,10 +5,11 @@ import { MemberComponent } from "../member/member.component";
 import { NewItemComponent } from "../new-item/new-item.component";
 import { IButton } from '../../models/models';
 import { ButtonComponent } from "../button/button.component";
+import { StateButtonComponent } from "../state-button/state-button.component";
 
 @Component({
   selector: 'app-room-members',
-  imports: [MemberComponent, NewItemComponent, ButtonComponent],
+  imports: [MemberComponent, NewItemComponent,  StateButtonComponent],
   templateUrl: './room-members.component.html',
   styleUrl: './room-members.component.scss'
 })
@@ -21,8 +22,8 @@ export class RoomMembersComponent {
     valueFn: () => this.showMembers(),
     class: 'square border-less',
     statesMapFn: () => new Map([
-      [true, { stateClass: '', icon: 'expand_less' }],
-      [false, { stateClass: '', icon: 'expand_more' }],
+      [true, { stateClass: '', icon: 'keyboard_arrow_down' }],
+      [false, { stateClass: '', icon: 'keyboard_arrow_left' }],
     ]),
   }
 

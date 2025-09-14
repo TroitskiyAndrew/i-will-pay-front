@@ -1,14 +1,15 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { StateService } from '../../services/state.service';
 import { NEW_PAYMENT_ID } from '../../constants/constants';
 import { IButton } from '../../models/models';
 import { ButtonComponent } from "../button/button.component";
 import { PaymentComponent } from "../payment/payment.component";
+import { StateButtonComponent } from "../state-button/state-button.component";
 
 @Component({
   selector: 'app-room-payments',
-  imports: [ ButtonComponent, PaymentComponent],
+  imports: [ButtonComponent, PaymentComponent, StateButtonComponent],
   templateUrl: './room-payments.component.html',
   styleUrl: './room-payments.component.scss'
 })
@@ -22,9 +23,24 @@ export class RoomPaymentsComponent {
     valueFn: () => this.showPayments(),
     class: 'square border-less',
     statesMapFn: () => new Map([
-      [true, { stateClass: '', icon: 'expand_less' }],
-      [false, { stateClass: '', icon: 'expand_more' }],
+      [true, { stateClass: '', icon: 'keyboard_arrow_down' }],
+      [false, { stateClass: '', icon: 'keyboard_arrow_left' }],
     ]),
+  }
+
+  warningButton: IButton = {
+    icon: 'question_mark',
+    action: () => {},
+    class: 'square square--small border-less stroke-content yellow-content',
+    show: computed(() => this.stateService.roomStatesMap().get(this.stateService.roomId())?.unchecked || false),
+    disabled: signal(true),
+  }
+  errorButton: IButton = {
+    icon: 'error_outline',
+    action: () => {},
+    show: computed(() => this.stateService.roomStatesMap().get(this.stateService.roomId())?.hasUnsharedPayment || false),
+    class: 'square square--small border-less red-content',
+    disabled: signal(true),
   }
 
   constructor(public stateService: StateService, private apiService: ApiService){}

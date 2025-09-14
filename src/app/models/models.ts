@@ -68,6 +68,7 @@ export interface IShare {
 }
 
 export enum SocketAction {
+  UpdateUser = 'updateUser',
   AddMember = 'addMember',
   UpdateMember = 'updateMember',
   AddPayment = 'addPayment',
@@ -95,6 +96,8 @@ export type SocketMessage<A extends SocketAction> =
     ? { action: A; share: IShare }
   : A extends SocketAction.AddRoom | SocketAction.UpdateRoom
     ? { action: A; room: IRoom }
+  : A extends SocketAction.UpdateUser
+    ? { action: A; user: IUser }
   : A extends SocketAction.DeletePayment
     ? { action: A; id: string }
   : A extends SocketAction.DeleteShare

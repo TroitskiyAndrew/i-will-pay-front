@@ -10,10 +10,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { ButtonComponent } from "../button/button.component";
 import { ApiService } from '../../services/api.service';
 import { StateButtonComponent } from "../state-button/state-button.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-member-share',
-  imports: [ReactiveFormsModule, MatIconModule, MatButtonModule, ButtonComponent, StateButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule, MatButtonModule, ButtonComponent, StateButtonComponent],
   templateUrl: './member-share.component.html',
   styleUrl: './member-share.component.scss'
 })
@@ -22,6 +23,13 @@ export class MemberShareComponent {
   memberId = input<string>('');
   sharesMap = input<Map<string, IShare>>(new Map());
   share = computed(() => this.sharesMap().get(this.memberId()));
+  isPayer = computed(() => {
+    const share = this.share();
+    if(!share){
+      return false;
+    }
+    return [share.payer, share.userId].includes(this.stateService.user().id)
+  })
   disableMoneyInputs = computed(() => {
     const share = this.share()
     return !share || ![share.paymentPayer, share.payer, share.userId].includes(this.stateService.user().id);
@@ -88,7 +96,7 @@ export class MemberShareComponent {
     ]),
   }
 
-  constructor(private stateService: StateService, private apiService: ApiService) {
+  constructor(public stateService: StateService, private apiService: ApiService) {
     effect(() => {
       const share = this.shareControlChanged() || 0
       const updatedShare = this.lastShare;

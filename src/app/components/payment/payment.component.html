@@ -17,7 +17,7 @@
         <div class="block block--whole block--close block--last block--short">      {{date()}}    </div>
       }
     <div [ngClass]="['block', 'block--whole',  'block--close', 'block--short',  'block--last', balance() < 0 ? 'red' : 'green']">      {{balance()}}    </div>
-    <app-state-button class="block block--whole block--close block--short" [button]="editButton" [value]="this.editMode()"></app-state-button>
+    <app-state-button class="block block--whole block--close block--short" [button]="expandButton" [value]="this.editMode()"></app-state-button>
   </div>
   @if (canEdit()){
     <input class="input block block--whole block--close" type="text" [formControl]="paymentForm.controls.comment" placeholder="комментарий">

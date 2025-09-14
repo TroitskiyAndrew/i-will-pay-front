@@ -150,6 +150,9 @@ export class StateService {
     });
 
 
+    this.socketService.onMessage(SocketAction.UpdateUser, (data: SocketMessage<SocketAction.UpdateUser>) => {
+      this.user.set(data.user);
+    })
     this.socketService.onMessage(SocketAction.AddRoom, (data: SocketMessage<SocketAction.AddRoom>) => {
       this.addRoom(data.room);
     })
@@ -197,8 +200,8 @@ export class StateService {
     })
     this.socketService.onMessage(SocketAction.DeleteShare, (data: SocketMessage<SocketAction.DeleteShare>) => {
       const shareId = data.id;
-      if (this.sharesMap().has(data.id)) {
-        this.deleteShare(data.id, data.paymentId)
+      if (this.sharesMap().has(shareId)) {
+        this.deleteShare(shareId, data.paymentId)
       }
     })
   }
@@ -244,7 +247,12 @@ export class StateService {
     this.newMembersMap.set(member.id, member);
   }
   addMembers() {
+    const addedMembers = [...this.newMembersMap!.values()];
     this.members.update(members => [...members, ...this.newMembersMap!.values()]);
+    addedMembers.forEach(member => this.getRoomState(member.roomId, this.user().id).then(roomState => {
+      this.roomStatesCash.set(member.roomId, roomState);
+      this.roomStatesMap.update(roomStatesMap => new Map([...roomStatesMap.entries(), [member.roomId, roomState]]))
+    }))
     this.newMembersMap = null;
   }
 
@@ -257,6 +265,7 @@ export class StateService {
     this.updateMembersMap.set(member.id, member);
   }
   updateMembers() {
+    const updateMembers = [...this.updateMembersMap!.values()];
     this.members.update(members => {
       for (const member of [...this.updateMembersMap!.values()]) {
         const targeMemberIndex = members.findIndex(storedMember => member.id === storedMember.id);
@@ -264,6 +273,10 @@ export class StateService {
       }
       return [...members]
     })
+    updateMembers.forEach(member => this.getRoomState(member.roomId, this.user().id).then(roomState => {
+      this.roomStatesCash.set(member.roomId, roomState);
+      this.roomStatesMap.update(roomStatesMap => new Map([...roomStatesMap.entries(), [member.roomId, roomState]]))
+    }))
     this.updateMembersMap = null;
   }
 
@@ -276,7 +289,12 @@ export class StateService {
     this.newPaymentsMap.set(payment.id, payment);
   }
   addPayments() {
+    const addedPayments = [...this.newPaymentsMap!.values()];
     this.payments.update(payments => [...payments, ...this.newPaymentsMap!.values()]);
+    addedPayments.forEach(payment => this.getRoomState(payment.roomId, this.user().id).then(roomState => {
+      this.roomStatesCash.set(payment.roomId, roomState);
+      this.roomStatesMap.update(roomStatesMap => new Map([...roomStatesMap.entries(), [payment.roomId, roomState]]))
+    }))
     this.newPaymentsMap = null;
   }
 
@@ -314,6 +332,13 @@ export class StateService {
     this.deletePaymentsMap.set(paymentId, paymentId);
   }
   deletePayments() {
+    [...this.deletePaymentsMap!.keys()].forEach(paymentId => {
+      const roomId = this.paymentsMap().get(paymentId)?.roomId || '';
+      this.getRoomState(roomId, this.user().id).then(roomState => {
+        this.roomStatesCash.set(roomId, roomState);
+        this.roomStatesMap.update(roomStatesMap => new Map([...roomStatesMap.entries(), [roomId, roomState]]))
+      })
+    })
     this.payments.update(payments => payments.filter(payment => !this.deletePaymentsMap!.has(payment.id)))
     this.deletePaymentsMap = null;
   }
@@ -329,12 +354,17 @@ export class StateService {
   addShares() {
     let shareIdsMapBaPayment = this.shareIdsMapBaPayment();
     let sharesMap = this.sharesMap();
-    for (const share of [...this.newSharesMap!.values()]) {
+    const addedShares = [...this.newSharesMap!.values()];
+    for (const share of addedShares) {
       const paymentShareIds = shareIdsMapBaPayment.get(share.paymentId) || [];
       paymentShareIds.push(share.id);
       shareIdsMapBaPayment = new Map([...shareIdsMapBaPayment.entries(), [share.paymentId, paymentShareIds]]);
       sharesMap = new Map([...sharesMap.entries(), [share.id, share]]);
     }
+    addedShares.forEach(share => this.getRoomState(share.roomId, this.user().id).then(roomState => {
+      this.roomStatesCash.set(share.roomId, roomState);
+      this.roomStatesMap.update(roomStatesMap => new Map([...roomStatesMap.entries(), [share.roomId, roomState]]))
+    }))
     this.shareIdsMapBaPayment.set(shareIdsMapBaPayment)
     this.sharesMap.set(sharesMap)
     this.newSharesMap = null;
@@ -350,7 +380,6 @@ export class StateService {
   }
   updateShares() {
 
-    // this.sharesMap.update(sharesMap => new Map([...sharesMap.entries(), ...this.updateSharesMap!.entries()]))
     [...this.updateSharesMap!.values()].forEach(share => {
       this.updatePayment(this.paymentsMap().get(share.paymentId)!)
     })
@@ -374,12 +403,19 @@ export class StateService {
   deleteShares() {
     let shareIdsMapBaPayment = this.shareIdsMapBaPayment();
     const sharesMap = this.sharesMap();
+    const roomIds: string[] = []
     for (const [shareId, paymentId] of [...this.deleteSharesMap!.entries()]) {
+      roomIds.push(sharesMap.get(shareId)?.roomId || '')
       const paymentShareIds = shareIdsMapBaPayment.get(paymentId) || [];
       shareIdsMapBaPayment = new Map([...shareIdsMapBaPayment.entries(), [paymentId, paymentShareIds.filter(id => id !== shareId)]])
       sharesMap.delete(shareId)
     }
-
+    roomIds.forEach(roomId => {
+      this.getRoomState(roomId, this.user().id).then(roomState => {
+        this.roomStatesCash.set(roomId, roomState);
+        this.roomStatesMap.update(roomStatesMap => new Map([...roomStatesMap.entries(), [roomId, roomState]]))
+      })
+    })
     this.sharesMap.set(sharesMap);
     this.shareIdsMapBaPayment.set(shareIdsMapBaPayment);
     this.deleteSharesMap = null;

@@ -3,9 +3,16 @@
   <app-button class="block block--whole block--short" [button]="warningButton"></app-button>
   <app-button class="block block--whole block--short" [button]="errorButton"></app-button>
 </div>
-@if(stateService.currentRoom()){
-  <div class="block block--whole block--close block--auto">{{stateService.currentRoom()?.name}}</div>
+
+@if (editNameMode()) {
+  <app-update-item class="block block--tight" [value]="name() || ''" (newValue)="editName($event)"></app-update-item>
 } @else {
-  <div class="block block--whole block--close block--auto">{{stateService.user().name}}</div>
+  <div class="block block--whole block--close block--short">
+    <div class="block block--auto"> {{name() || ''}}     </div>
+    @if(name()){
+      <app-button class="block block--whole block--short" [button]="editNameButton"></app-button>
+    }
+  </div>
 }
+
 <div [ngClass]="['block', 'block--whole block--close', 'block--short', 'block--last', balance() < 0 ? 'red' : 'green']">{{balance()}}</div>
