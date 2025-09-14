@@ -1,7 +1,10 @@
-<div class="block block--whole block--tight block--short">
-  <app-button class="block block--whole block--short" [button]="warningButton"></app-button>
-  <app-button class="block block--whole block--short" [button]="errorButton"></app-button>
-</div>
+@if(this.state()?.unchecked || this.state()?.hasUnsharedPayment){
+  <div class="block block--tight block--short">
+    <app-button class="block  block--short" [button]="warningButton"></app-button>
+    <app-button class="block  block--short" [button]="errorButton"></app-button>
+  </div>
 
-<div class="block block--whole block--auto"> {{room()?.name || ''}}</div>
-<div [ngClass]="['block', 'block--whole', 'block--short', 'block--last', (state()?.balance || 0 )< 0 ? 'red' : 'green']"> {{state()?.balance}}</div>
+}
+
+<div class="block  block--auto"> {{room()?.name || ''}}</div>
+<div [ngClass]="['block',  'block--short', 'block--last', (state()?.balance || 0 )< 0 ? 'red' : 'green']"> {{state()?.balance}}</div>

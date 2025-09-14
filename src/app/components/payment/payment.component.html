@@ -1,23 +1,32 @@
-<div class="block block--vertical">
+<div class="block block--vertical ">
   <div class="block block--whole block--close">
+    @if (this.state()?.unchecked || payment()?.payer === this.stateService.user().id &&  payment()?.amount !== payment()?.shared) {
+
+    }
     <div class="block block--whole block--tight block--short">
       <app-button class="block block--whole block--short" [button]="warningButton"></app-button>
       <app-button class="block block--whole block--short" [button]="errorButton"></app-button>
-
     </div>
       @if (canEdit()){
         <input class="block block--whole block--close input--amount" type="number" [formControl]="paymentForm.controls.amount">
       } @else {
-        <div class="block block--whole block--close block--short">      {{amount()}}    </div>
+        @if (!payment()?.debt) {
+          <div class="block block--whole block--close block--short">      {{amount()}}    </div>
+          <div class="block block--whole block--close block--auto">      {{payerName()}}    </div>
+        }
+
       }
-      <div class="block block--whole block--close block--auto">      {{payerName()}}    </div>
       @if (canEdit()){
         <input class="block block--whole block--close block--last input--date" type="date" [formControl]="paymentForm.controls.date">
       } @else {
         <div class="block block--whole block--close block--last block--short">      {{date()}}    </div>
       }
-    <div [ngClass]="['block', 'block--whole',  'block--close', 'block--short',  'block--last', balance() < 0 ? 'red' : 'green']">      {{balance()}}    </div>
-    <app-state-button class="block block--whole block--close block--short" [button]="expandButton" [value]="this.editMode()"></app-state-button>
+      @if (!payment()?.debt) {
+    <div [ngClass]="['block', 'block--whole',  'block--close', 'block--short',  'block--last', color()]">      {{balance()}}    </div>
+      <app-state-button class="block block--whole block--close block--short" [button]="expandButton" [value]="this.editMode()"></app-state-button>
+    } @else {
+      <div class="block block--whole block--close block--short block--last">      {{amount()}}    </div>
+    }
   </div>
   @if (canEdit()){
     <input class="input block block--whole block--close" type="text" [formControl]="paymentForm.controls.comment" placeholder="комментарий">
@@ -26,7 +35,7 @@
   }
 </div>
 @if(editMode()){
-  <div class="block block--vertical">
+  <div class="block block--vertical block--vertical-borders">
     @for (memberId of stateService.memberIds(); track memberId) {
       <app-member-share class="block block--close" [memberId]="memberId" [sharesMap]="sharesMap()" (changeShare)="onShareChanged()" ></app-member-share>
     }

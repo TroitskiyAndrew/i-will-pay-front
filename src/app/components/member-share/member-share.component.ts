@@ -154,9 +154,9 @@ export class MemberShareComponent {
       }
     })
     effect(() => {
-      if(this.disableMoneyInputs()){
-        this.balanceControl.disable()
-      }
+      // if(this.disableMoneyInputs()){
+      //   // this.balanceControl.disable()
+      // }
     })
   }
 

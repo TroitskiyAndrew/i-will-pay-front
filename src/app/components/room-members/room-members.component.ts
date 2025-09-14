@@ -14,12 +14,12 @@ import { StateButtonComponent } from "../state-button/state-button.component";
   styleUrl: './room-members.component.scss'
 })
 export class RoomMembersComponent {
-  showMembers = signal<boolean>(false);
+
 
   expandButton: IButton = {
     icon: 'expand_more',
-    action: () => this.showMembers.update(val => !val),
-    valueFn: () => this.showMembers(),
+    action: () => this.stateService.showMembers.update(val => !val),
+    valueFn: () => this.stateService.showMembers(),
     class: 'square border-less',
     statesMapFn: () => new Map([
       [true, { stateClass: '', icon: 'keyboard_arrow_down' }],
@@ -34,7 +34,7 @@ export class RoomMembersComponent {
   }
 
   toggleMembers() {
-    this.showMembers.update(val => !val)
+    this.stateService.showMembers.update(val => !val)
   }
 
 }

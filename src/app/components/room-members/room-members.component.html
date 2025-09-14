@@ -1,13 +1,15 @@
-<div class="block block--whole block--close">
+<div class="block block--vertical-borders block--close block--shrink">
   <div class="block block--whole block--close block--auto" >
     Участники
   </div>
   <div class="block block--whole block--last block--short"> {{stateService.memberIds().length}}</div>
   <app-state-button class="block block--whole block--short" [button]="expandButton"></app-state-button>
 </div>
-@if(showMembers()){
-  @for (memberId of this.stateService.memberIds(); track memberId) {
-    <app-member class="block block--whole block--close" [memberId]="memberId"></app-member>
-  }
-  <app-new-item class="block block--whole block--close" (newItem)="createMember($event)"></app-new-item>
+@if(stateService.showMembers()){
+  <div class="block block--vertical block--vertical-gap block--vertical-borders">
+    @for (memberId of this.stateService.memberIds(); track memberId) {
+      <app-member class="block block--close block--bordered" [memberId]="memberId"></app-member>
+    }
+    <app-new-item class="block block--close block--bordered" (newItem)="createMember($event)"></app-new-item>
+  </div>
 }

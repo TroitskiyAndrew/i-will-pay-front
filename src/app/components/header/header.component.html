@@ -5,14 +5,14 @@
 </div>
 
 @if (editNameMode()) {
-  <app-update-item class="block block--tight" [value]="name() || ''" (newValue)="editName($event)"></app-update-item>
+  <app-update-item class="block block--whole block--tight" [value]="name() || ''" (newValue)="editName($event)"></app-update-item>
 } @else {
-  <div class="block block--whole block--close block--short">
-    <div class="block block--auto"> {{name() || ''}}     </div>
+  <div class="block block--whole block--close">
+    <div class="block block--auto block--whole"> {{name() || ''}}     </div>
     @if(name()){
-      <app-button class="block block--whole block--short" [button]="editNameButton"></app-button>
+      <app-button class="block block--whole block--short block--last" [button]="editNameButton"></app-button>
     }
   </div>
 }
 
-<div [ngClass]="['block', 'block--whole block--close', 'block--short', 'block--last', balance() < 0 ? 'red' : 'green']">{{balance()}}</div>
+<div [ngClass]="['block', ' block--close', 'block--short', 'block--last', balance() < 0 ? 'red' : 'green']">{{balance()}}</div>

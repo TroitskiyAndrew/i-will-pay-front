@@ -11,6 +11,7 @@ import { getNewPayment, NEW_PAYMENT_ID } from '../../constants/constants';
 import { ButtonComponent } from "../button/button.component";
 import { CommonModule } from '@angular/common';
 import { StateButtonComponent } from "../state-button/state-button.component";
+import { getDate, getDateString } from '../../utils/utils';
 
 @Component({
   selector: 'app-payment',
@@ -24,8 +25,30 @@ export class PaymentComponent {
   payerName = computed(() => this.stateService.membersMapByUser().get(this.payment()?.payer || '')?.name || '')
   state = computed(() => this.stateService.paymentStatesMap().get(this.paymentId()))
   balance = computed(() => this.state()?.balance || 0);
+  color = computed(() => {
+    if(this.payment()?.debt){
+      return ''
+    }
+    return this.balance() < 0 ? 'red' : 'green';
+  })
   amount = computed(() => this.state()?.amount || 0);
-  comment = computed(() => this.payment()?.comment || '');
+  comment = computed(() => {
+    const payment = this.payment();
+    if(!payment){
+      return '';
+    }
+    if(payment.debt){
+      const isPayer = payment.payer === this.stateService.user().id;
+      if(isPayer){
+        const share = [...this.sharesMap().values()][0];
+        const member = this.stateService.membersMapByUser().get(share.payer)
+        return `Отдал деньги ${member?.name || ''}`
+      }
+     return `Получил деньги от ${this.payerName()}`
+    } else {
+      return this.payment()?.comment || ''
+    }
+  });
   date = computed(() => this.payment()?.date || '');
   editModeInput = input(false);
   _editMode = signal(false);
@@ -139,7 +162,7 @@ export class PaymentComponent {
       if (payment) {
         this.paymentForm.controls.amount.setValue(payment.amount)
         this.paymentForm.controls.comment.setValue(payment.comment)
-        this.paymentForm.controls.date.setValue(this.getDate(payment.date))
+        this.paymentForm.controls.date.setValue(getDate(payment.date))
       }
     })
     effect(() => {
@@ -170,25 +193,9 @@ export class PaymentComponent {
       roomId: payment?.roomId || this.stateService.roomId(),
       payer: payment?.payer || this.stateService.user().id,
       photos: [],
-      date: this.getDateString(this.paymentForm.controls.date.getRawValue()),
+      date: getDateString(this.paymentForm.controls.date.getRawValue()),
       shared: this.shared(),
     }
-  }
-
-  getDateString(dateString: string): string {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day < 10 ? '0' + day : day}/${month < 10 ? '0' + month : month}/${year}`
-  }
-  getDate(dateStr: string): string {
-    let date = new Date();
-    if(dateStr){
-      const [day, month, year] = dateStr.split('/').map(n => Number(n))
-      date = new Date(year, month - 1, day)
-    }
-    return date.toISOString().substring(0, 10);
   }
 
   onShareChanged() {

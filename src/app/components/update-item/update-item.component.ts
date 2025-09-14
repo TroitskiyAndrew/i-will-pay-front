@@ -12,11 +12,11 @@ import { CommonModule } from '@angular/common';
   styleUrl: './update-item.component.scss'
 })
 export class UpdateItemComponent {
-  control = new FormControl('', {nonNullable: true, validators: [Validators.required]});
-  newValue = output<string>();
+  control = new FormControl<string | number>('', {nonNullable: true, validators: [Validators.required]});
+  newValue = output<string | number>();
   controlChange = toSignal(this.control.valueChanges);
   createButton: IButton = {
-    icon: 'save',
+    icon: 'check',
     action: () => {
       this.newValue.emit(this.control.getRawValue());
       this.control.setValue('')
@@ -27,7 +27,10 @@ export class UpdateItemComponent {
     }),
     class: 'square'
   }
-  value = input('');
+  value = input<string | number>('');
+  type = computed(() => {
+    return typeof this.value() === 'string' ? 'text' : 'number'
+  })
   cancelButton: IButton = {
     icon: 'cancel',
     action: () => {

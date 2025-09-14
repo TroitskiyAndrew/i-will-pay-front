@@ -11,10 +11,11 @@ import { HeaderComponent } from "./components/header/header.component";
 import { NewItemComponent } from "./components/new-item/new-item.component";
 import { UpdateItemComponent } from "./components/update-item/update-item.component";
 import { ApiService } from './services/api.service';
+import { RoomDebtsComponent } from "./components/room-debts/room-debts.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RoomMembersComponent, UserRoomsComponent, RoomPaymentsComponent, ButtonComponent, PaymentComponent, HeaderComponent, UpdateItemComponent],
+  imports: [RoomMembersComponent, UserRoomsComponent, RoomPaymentsComponent, ButtonComponent, PaymentComponent, HeaderComponent, UpdateItemComponent, RoomDebtsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -37,15 +38,15 @@ export class AppComponent {
     icon: 'edit',
     action: () => this.editGroupNameMode.set(true),
     show: computed(() => !this.stateService.membersMapByUser().get(this.stateService.user().id)?.isGuest),
-    class: 'square border-less .black-content'
+    class: 'square'
   }
 
   constructor(public stateService: StateService, public errorService: ErrorService, private apiService: ApiService){
     this.stateService.init()
   }
 
-  editGroupName(name: string){
-    if(!name){
+  editGroupName(name: string | number){
+    if(!name || typeof name === 'number'){
       this.editGroupNameMode.set(false);
       return
     }

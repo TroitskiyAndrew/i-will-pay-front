@@ -14,20 +14,7 @@ import { ApiService } from '../../services/api.service';
 })
 export class HeaderComponent {
 
-  state = computed(() => {
-    const roomStatesMap = this.stateService.roomStatesMap();
-    return [...roomStatesMap.values()].reduce<Omit<IRoomState, 'debts'>>((res, state) => {
-      if (state.unchecked) {
-        res.unchecked = true;
-      }
-      if (state.hasUnsharedPayment) {
-        res.hasUnsharedPayment = true;
-      }
-      res.balance += state.balance;
-      return res;
-    }, { balance: 0, unchecked: false, hasUnsharedPayment: false });
-
-  });
+  state = computed(() => this.stateService.totalState());
   unchecked = computed(() => this.state().unchecked || false);
   hasUnsharedPayment = computed(() => this.state().hasUnsharedPayment || false);
   balance = computed(() => this.state().balance);
@@ -63,8 +50,8 @@ export class HeaderComponent {
 
   constructor(public stateService: StateService, public apiService: ApiService) { }
 
-  editName(name: string) {
-    if (!name) {
+  editName(name: string | number) {
+    if (!name || typeof name === 'number') {
       this.editNameMode.set(false);
       return
     }

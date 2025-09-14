@@ -45,6 +45,7 @@ export interface IPayment {
   comment: string;
   photos: string[];
   date: string;
+  debt?: true
 }
 
 export interface IPaymentState {

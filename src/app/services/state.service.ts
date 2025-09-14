@@ -13,6 +13,20 @@ export class StateService {
   roomId = signal<string>('');
   rooms = signal<IRoom[]>([]);
   roomStatesMap = signal<Map<string, IRoomState>>(new Map());
+  totalState = computed(() => {
+    const roomStatesMap = this.roomStatesMap();
+    return [...roomStatesMap.values()].reduce<Omit<IRoomState, 'debts'>>((res, state) => {
+      if (state.unchecked) {
+        res.unchecked = true;
+      }
+      if (state.hasUnsharedPayment) {
+        res.hasUnsharedPayment = true;
+      }
+      res.balance += state.balance;
+      return res;
+    }, { balance: 0, unchecked: false, hasUnsharedPayment: false });
+
+  });
   roomStatesCash = new Map<string, IRoomState>()
   roomsMap = computed(() => new Map(this.rooms().map(room => [room.id, room])));
   roomIds = computed(() => this.rooms().map(room => room.id));
@@ -35,6 +49,13 @@ export class StateService {
 
   createPaymentMode = signal(false);
   newPayment = getNewPayment('init');
+
+  showDebts = signal<boolean>(false);
+  showDebtsMenu = signal<boolean>(false);
+  showMembers = signal<boolean>(false);
+  showMembersMenu = signal<boolean>(false);
+  showPayments = signal<boolean>(false);
+  showPaymentsMenu = signal<boolean>(false);
 
   constructor(private apiService: ApiService, private socketService: SocketService) {
     effect(async () => {
@@ -97,7 +118,7 @@ export class StateService {
       const payments = await this.apiService.getPayments(currentRoom.id) || []
       const members = await this.apiService.getMembers(currentRoom.id) || [];
       this.members.set(members);
-      this.payments.set([...payments, this.newPayment]);
+      this.payments.set([...payments, this.newPayment].reverse());
     });
     effect(async () => {
       const user = this.user();
@@ -148,6 +169,33 @@ export class StateService {
       console.log('paymentStatesMap')
       this.paymentStatesMap.set(paymentStatesMap);
     });
+    effect(() => {
+      if(this.showDebts()){
+        this.showMembersMenu.set(false)
+        this.showPaymentsMenu.set(false)
+      } else {
+        this.showMembersMenu.set(true)
+        this.showPaymentsMenu.set(true)
+      }
+    })
+    effect(() => {
+      if(this.showMembers()){
+        this.showDebtsMenu.set(false)
+        this.showPaymentsMenu.set(false)
+      } else {
+        this.showDebtsMenu.set(true)
+        this.showPaymentsMenu.set(true)
+      }
+    })
+    effect(() => {
+      if(this.showPayments()){
+        this.showDebtsMenu.set(false)
+        this.showMembersMenu.set(false)
+      } else {
+        this.showDebtsMenu.set(true)
+        this.showMembersMenu.set(true)
+      }
+    })
 
 
     this.socketService.onMessage(SocketAction.UpdateUser, (data: SocketMessage<SocketAction.UpdateUser>) => {

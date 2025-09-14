@@ -1,6 +1,6 @@
 <div class="block block--vertical block--whole block--close wrapper">
   @if (this.errorService.errorMessage()) {
-    <div class="block block--vertical block--error">
+    <div class="block block--vertical block--vertical-borders block--error">
       <div class="block error" > {{this.errorService.errorMessage()}} </div>
       <div class="block">
         <app-button class="block block--whole" [button]="errorButton"></app-button>
@@ -8,26 +8,30 @@
     </div>
   } @else {
     @if (stateService.createPaymentMode()) {
-      <app-payment class="block block--vertical block--whole block--close wrapper" [editModeInput]="true"></app-payment>
+      <app-payment class="block block--vertical block--vertical-borders block--whole block--close wrapper" [editModeInput]="true"></app-payment>
     } @else {
-      <app-header class="block" ></app-header>
+      <app-header class="block block--shrink" ></app-header>
       @if(!this.stateService.currentRoom()){
-        <app-user-rooms class="block block--vertical block--first-vertical" ></app-user-rooms>
+        <app-user-rooms class="block block--whole block--vertical block--vertical-borders block--first-vertical" ></app-user-rooms>
       } @else {
-        @if (editGroupNameMode()) {
-          <app-update-item class="block" [value]="this.stateService.currentRoom()?.name || ''" (newValue)="editGroupName($event)"></app-update-item>
-        } @else {
-          <div class="block block--whole block--close block--short">
-            <div class="block block--auto">
-              {{this.stateService.currentRoom()?.name || ''}}
+        <div class="block block--shrink  block--whole block--vertical-borders">
+          @if (editGroupNameMode()) {
+            <app-update-item class="block " [value]="this.stateService.currentRoom()?.name || ''" (newValue)="editGroupName($event)"></app-update-item>
+          } @else {
+            <div class="block block--close">
+              <div class="block block--auto block--whole">
+                {{this.stateService.currentRoom()?.name || ''}}
+              </div>
+              <app-button class="block block--whole block--short block--last" [button]="editGroupNameBUtton"></app-button>
             </div>
-            <app-button class="block block--whole block--short" [button]="editGroupNameBUtton"></app-button>
-          </div>
-        }
-        <app-room-members class="block block--vertical"></app-room-members>
-        <app-room-payments class="block block--vertical"></app-room-payments>
+          }
+        </div>
+        <app-room-debts class="block block--vertical block--whole"></app-room-debts>
+        <app-room-members class="block block--vertical   block--whole"></app-room-members>
+        <app-room-payments class="block block--vertical  block--whole"></app-room-payments>
+
         @if (!this.stateService.createPaymentMode() && this.stateService.currentRoom() != null) {
-          <app-button class="block block--last-vertical" [button]="createButton"></app-button>
+          <app-button class="block block--last-vertical block--shrink" [button]="createButton"></app-button>
         }
       }
     }

@@ -6,21 +6,23 @@ import { IButton } from '../../models/models';
 import { ButtonComponent } from "../button/button.component";
 import { PaymentComponent } from "../payment/payment.component";
 import { StateButtonComponent } from "../state-button/state-button.component";
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-room-payments',
-  imports: [ButtonComponent, PaymentComponent, StateButtonComponent],
+  imports: [ButtonComponent, PaymentComponent, StateButtonComponent, CommonModule],
   templateUrl: './room-payments.component.html',
   styleUrl: './room-payments.component.scss'
 })
 export class RoomPaymentsComponent {
-  showPayments = signal<boolean>(false);
+
   newPaymentId = NEW_PAYMENT_ID;
 
   expandButton: IButton = {
     icon: 'expand_more',
-    action: () => this.showPayments.update(val => !val),
-    valueFn: () => this.showPayments(),
+    action: () => this.stateService.showPayments.update(val => !val),
+    valueFn: () => this.stateService.showPayments(),
     class: 'square border-less',
     statesMapFn: () => new Map([
       [true, { stateClass: '', icon: 'keyboard_arrow_down' }],
@@ -50,7 +52,7 @@ export class RoomPaymentsComponent {
   }
 
   toggleMembers(){
-    this.showPayments.update(val => !val)
+    this.stateService.showPayments.update(val => !val)
   }
 
 }

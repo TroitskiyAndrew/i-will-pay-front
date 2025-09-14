@@ -1,0 +1,12 @@
+<div class="block block--auto">{{name()}}</div>
+
+@if (editDebtMode()) {
+  <app-update-item class="block block--whole block--short block--last" [value]="amount()" (newValue)="editDebt($event)"></app-update-item>
+} @else {
+  <div class="block block--whole block--close block--short block--last">
+    <div [ngClass]="['block', 'block--whole', 'block--auto', isOwner() ? 'green' : 'red']">
+      {{amount()}}
+    </div>
+    <app-button class="block block--whole block--short " [button]="editDebtButton"></app-button>
+  </div>
+}

@@ -1,6 +1,6 @@
-<div class="block block--whole block--close">
+<div class="block block--close block--vertical-borders block--shrink">
 
-  <div class="block block--whole block--close block--auto">
+  <div class="block block--whole block--close block--auto ">
     Платежи
   </div>
   <div class="block block--whole block--tight block--short">
@@ -10,11 +10,14 @@
   </div>
   <app-state-button class="block block--whole block--last block--short" [button]="expandButton"></app-state-button>
 </div>
-@if(showPayments()){
-  @for (paymentId of this.stateService.paymentIds(); track paymentId) {
-    @if(paymentId !== newPaymentId){
-      <app-payment class="block block--vertical block--whole block--close"  [paymentId]="paymentId" [editModeInput]="false"></app-payment>
+@if(stateService.showPayments()){
+  <div [ngClass]="{'block block--vertical block--vertical-gap': true, 'block--vertical-borders': !stateService.showPayments()}">
+    @for (paymentId of this.stateService.paymentIds(); track paymentId) {
+      @if(paymentId !== newPaymentId){
+        <app-payment class="block block--vertical block--bordered block--whole block--close"  [paymentId]="paymentId" [editModeInput]="false"></app-payment>
+      }
     }
-  }
+
+  </div>
 
 }
