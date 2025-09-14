@@ -1,0 +1,56 @@
+@use '../abstracts/variables' as *;
+
+.block {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px;
+  column-gap: 10px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  &--menu {
+    border-bottom: black 2px solid;
+  }
+  &--auto {
+    width: auto;
+    flex-grow: 0;
+    overflow-y: hidden;
+    white-space: nowrap;
+  }
+  &--whole{
+    padding: 0px;
+  }
+  &--close{
+    column-gap: 5px;
+  }
+  &--tight{
+    column-gap: 0px;
+  }
+
+  &--vertical {
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    row-gap: 10px;
+  }
+  &--last{
+    margin-left: auto;
+  }
+  &--last-vertical{
+    margin-top: auto;
+  }
+  &--first-vertical{
+    margin-bottom: auto;
+  }
+  &--short {
+    width: max-content;
+  }
+  &.red {
+    color: red;
+  }
+  &.green {
+    color: green;
+  }
+}
+

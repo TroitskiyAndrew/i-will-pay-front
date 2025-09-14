@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, Injector, input, output, signal } from '@angular/core';
-import { IShare } from '../../models/models';
+import { IButton, IShare } from '../../models/models';
 import { StateService } from '../../services/state.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -7,10 +7,13 @@ import { debounceTime, skip } from 'rxjs';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { ButtonComponent } from "../button/button.component";
+import { ApiService } from '../../services/api.service';
+import { StateButtonComponent } from "../state-button/state-button.component";
 
 @Component({
   selector: 'app-member-share',
-  imports: [MatCheckbox, ReactiveFormsModule, MatIconModule, MatButtonModule],
+  imports: [ReactiveFormsModule, MatIconModule, MatButtonModule, ButtonComponent, StateButtonComponent],
   templateUrl: './member-share.component.html',
   styleUrl: './member-share.component.scss'
 })
@@ -19,6 +22,24 @@ export class MemberShareComponent {
   memberId = input<string>('');
   sharesMap = input<Map<string, IShare>>(new Map());
   share = computed(() => this.sharesMap().get(this.memberId()));
+  disableMoneyInputs = computed(() => {
+    const share = this.share()
+    return !share || ![share.paymentPayer, share.payer, share.userId].includes(this.stateService.user().id);
+  })
+  isUnchecked = computed(() => {
+    const share = this.sharesMap().get(this.memberId());
+    if(share == null){
+      return false;
+    }
+    const userId = this.stateService.user().id;
+    if(userId === share?.paymentPayer && !share.confirmedByPayer){
+      return true;
+    }
+    if([share.payer, share.userId].includes(userId) && !share.confirmedByUser){
+      return true;
+    }
+    return false;
+  })
   lastShare?: IShare;
   member = computed(() => this.stateService.membersMap().get(this.memberId()));
   changeShare = output<number>();
@@ -29,15 +50,53 @@ export class MemberShareComponent {
   activeControlChanged = toSignal(this.activeControl.valueChanges.pipe(debounceTime(300)))
   balanceControlChanged = toSignal(this.balanceControl.valueChanges.pipe(debounceTime(300)));
 
-  constructor(private stateService: StateService) {
+  decreaseShareButton: IButton = {
+    icon: 'horizontal_rule',
+    class: 'square',
+    action: () => this.changeShareValue(-1),
+    disabled: this.disableMoneyInputs
+  }
+  increaseShareButton: IButton = {
+    icon: 'add',
+    class: 'square',
+    action: () => this.changeShareValue(1),
+    disabled: this.disableMoneyInputs
+  }
+  acceptButton: IButton = {
+    icon: 'check',
+    class: 'square',
+    action: () => {
+      const share = this.share()!;
+      const userId = this.stateService.user()!.id;
+      if(share.paymentPayer === userId && !share.confirmedByPayer){
+        share.confirmedByPayer = true;
+      }
+      if([share.payer, share.userId].includes(userId) && !share.confirmedByUser){
+        share.confirmedByUser = true
+      }
+      this.apiService.updateShare(share)
+    },
+  }
+  activeButton: IButton = {
+    icon: 'check_box',
+    class: 'square',
+    action: () => {this.activeControl.setValue(!this.activeControl.getRawValue())},
+    disabled: computed(() => this.share()?.paymentPayer !== this.stateService.user().id),
+    statesMapFn: () => new Map([
+      [false, { stateClass: 'border-less', icon: 'check_box_outline_blank' }],
+      [true, { stateClass: 'border-less', icon: 'check_box' }],
+    ]),
+  }
+
+  constructor(private stateService: StateService, private apiService: ApiService) {
     effect(() => {
       const share = this.shareControlChanged() || 0
       const updatedShare = this.lastShare;
       if (!updatedShare) {
         return;
       }
-      if (share == 0) {
-        updatedShare.share = null
+      if (share === 0) {
+        updatedShare.share = this.stateService.user().id === updatedShare.paymentPayer ? null : 0;
         updatedShare.amount = null
         updatedShare.balance = 0
       }
@@ -84,6 +143,11 @@ export class MemberShareComponent {
         this.activeControl.setValue(share.share !== null || share.amount !== null, { emitEvent: false })
         this.shareControl.setValue(share.share || 0, { emitEvent: false })
         this.balanceControl.setValue(share.balance || 0, { emitEvent: false })
+      }
+    })
+    effect(() => {
+      if(this.disableMoneyInputs()){
+        this.balanceControl.disable()
       }
     })
   }

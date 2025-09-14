@@ -1,0 +1,16 @@
+@use '../abstracts/variables' as *;
+
+.input {
+  background-color: transparent;
+  color: inherit;
+  outline: none;
+  box-sizing: border-box;
+  border: 2px solid black;
+  &--date {
+    width: 14ch;
+  }
+  &--amount {
+    width: 6ch;
+  }
+}
+

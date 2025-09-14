@@ -1,11 +1,3 @@
-:host {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.share {
-  &__share {
-    margin-left: auto;
-  }
+.share-buttons {
+  column-gap: 10px !important;
 }

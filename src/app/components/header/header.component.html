@@ -1,0 +1,11 @@
+<div class="block block--whole block--tight block--short">
+  <app-button class="block block--whole block--short" [button]="homeButton"></app-button>
+  <app-button class="block block--whole block--short" [button]="warningButton"></app-button>
+  <app-button class="block block--whole block--short" [button]="errorButton"></app-button>
+</div>
+@if(stateService.currentRoom()){
+  <div class="block block--whole block--close block--auto">{{stateService.currentRoom()?.name}}</div>
+} @else {
+  <div class="block block--whole block--close block--auto">{{stateService.user().name}}</div>
+}
+<div [ngClass]="['block', 'block--whole block--close', 'block--short', 'block--last', balance() < 0 ? 'red' : 'green']">{{balance()}}</div>

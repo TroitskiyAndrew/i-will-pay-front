@@ -1,0 +1,110 @@
+@use "../../../styles.scss" as *;
+
+button {
+  @include flex();
+  background-color: black;
+
+  color: $brand-color;
+  border-radius: 10px;
+  color: white;
+  &.mat-mdc-button-disabled {
+    background-color: grey;
+  }
+  width: 100%;
+  &.square {
+    height: 50px;
+    min-height: 50px;
+    width: 50px;
+    min-width: 50px;
+    &--small {
+      height: 30px;
+      min-height: 30px;
+      width: 30px;
+      min-width: 30px;
+    }
+    .material-icons{
+      font-size: 30px !important;
+    }
+    .mat-icon {
+      height: 30px !important;
+      min-height: 30px !important;
+      width: 30px !important;
+      min-width: 30px !important;
+    }
+  }
+}
+
+.state {
+  border: 2px solid black;
+  .content {
+    color: white;
+  }
+}
+
+.border-less {
+  background-color: transparent;
+  border: none;
+  box-shadow: none !important;
+  position: relative;
+  &.mat-mdc-button-disabled {
+    background-color: transparent;
+    cursor: none;
+  }
+  .content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+  }
+}
+
+// .regular {
+//   background-color: $interface-color;
+// }
+
+.stroke-content {
+  .content {
+    -webkit-text-stroke: 1px black;
+  }
+}
+// .brand-content {
+//   .content {
+//     color: $brand-color;
+//   }
+// }
+
+
+.black-content {
+  .content {
+    color: black;
+  }
+}
+
+.red-content {
+  .content {
+    color: red;
+  }
+}
+
+.yellow-content {
+  .content {
+    color: yellow;
+  }
+}
+
+.image {
+  background-size: cover;
+  background-position: center;
+  border: 1px solid black;
+  .content {
+    display: none;
+  }
+}
+
+::ng-deep {
+  .mat-mdc-button-touch-target {
+    width: 0px !important;
+    height: 0px !important;
+  }
+}

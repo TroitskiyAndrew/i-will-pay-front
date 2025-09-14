@@ -1,8 +1,13 @@
-<div (click)="toggleMembers()">Участники</div>
+<div class="block block--whole block--close">
+  <div class="block block--whole block--close block--auto" >
+    Участники
+  </div>
+  <app-button class="block block--whole block--last block--short" [button]="expandButton"></app-button>
+</div>
 @if(showMembers()){
   @for (memberId of this.stateService.memberIds(); track memberId) {
-    <app-member [memberId]="memberId"></app-member>
+    <app-member class="block block--whole block--close" [memberId]="memberId"></app-member>
   }
-  <app-new-item (newItem)="createMember($event)"></app-new-item>
+  <app-new-item class="block block--whole block--close" (newItem)="createMember($event)"></app-new-item>
 
 }

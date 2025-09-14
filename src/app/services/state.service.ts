@@ -2,6 +2,7 @@ import { computed, effect, Injectable, Signal, signal } from '@angular/core';
 import { ApiService } from './api.service';
 import { IMember, IPayment, IPaymentState, IRoom, IRoomState, IShare, ISplittedMembers, IUser, SocketAction, SocketMessage } from '../models/models';
 import { SocketService } from './socket.service';
+import { getNewPayment } from '../constants/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,10 @@ export class StateService {
   members = signal<IMember[]>([])
   memberIds = signal<string[]>([])
   membersMap = signal<Map<string, IMember>>(new Map());
+  membersMapByUser = signal<Map<string, IMember>>(new Map());
+
+  createPaymentMode = signal(false);
+  newPayment = getNewPayment('init');
 
   constructor(private apiService: ApiService, private socketService: SocketService) {
     effect(async () => {
@@ -39,8 +44,10 @@ export class StateService {
     effect(async () => {
       const members = this.members();
       const membersMap = new Map()
+      const membersMapByUser = new Map()
       const splittedMembers = members.reduce<ISplittedMembers>((res, member) => {
         membersMap.set(member.id, member)
+        membersMapByUser.set(member.userId, member)
         if (member.userId === member.payer) {
           res.payers.push(member.id);
         } else {
@@ -56,6 +63,7 @@ export class StateService {
           memberIds.push(...splittedMembers[userId])
         }
       });
+      this.membersMapByUser.set(membersMapByUser)
       this.membersMap.set(membersMap)
       this.memberIds.set(memberIds)
     })
@@ -69,10 +77,11 @@ export class StateService {
       if (!user.id) {
         return
       }
+      this.newPayment = getNewPayment(user.id)
       const rooms = this.rooms();
       const roomStatesMap = new Map();
       await Promise.all(rooms.map(async room => {
-        const roomState = this.roomStatesCash.get(room.id) || await this.getRoomState(room, user.id);
+        const roomState = this.roomStatesCash.get(room.id) || await this.getRoomState(room.id, user.id);
         this.roomStatesCash.set(room.id, roomState)
         roomStatesMap.set(room.id, roomState);
       }))
@@ -88,7 +97,7 @@ export class StateService {
       const payments = await this.apiService.getPayments(currentRoom.id) || []
       const members = await this.apiService.getMembers(currentRoom.id) || [];
       this.members.set(members);
-      this.payments.set(payments);
+      this.payments.set([...payments, this.newPayment]);
     });
     effect(async () => {
       const user = this.user();
@@ -109,19 +118,22 @@ export class StateService {
         shares.forEach(share => {
           shareIds.push(share.id)
           sharesMap.set(share.id, share)
-          if(isPayer){
-            if(share.payer !== user.id){
+          if (isPayer) {
+            if (share.payer !== user.id) {
               balance += share.balance
             }
-          } else if(share.payer === user.id) {
+          } else if (share.payer === user.id) {
             balance -= share.balance;
 
           }
-          if (share.payer === user.id && !share.confirmedByPayer) {
+          if (share.payer === user.id && !share.confirmedByUser) {
+            unchecked = true;
+          }
+          if (share.paymentPayer === user.id && !share.confirmedByPayer) {
             unchecked = true;
           }
         });
-        if(shares.length === 0){
+        if (shares.length === 0) {
           balance = payment.amount;
         }
         shareIdsMapBaPayment.set(payment.id, shareIds)
@@ -277,13 +289,19 @@ export class StateService {
     this.updatePaymentsMap.set(payment.id, payment);
   }
   updatePayments() {
+    const updatePayments = [...this.updatePaymentsMap!.values()];
     this.payments.update(payments => {
-      for (const payment of [...this.updatePaymentsMap!.values()]) {
+      for (const payment of [...updatePayments]) {
         const targePaymentIndex = payments.findIndex(storedPayment => payment.id === storedPayment.id);
         payments[targePaymentIndex] = payment
       }
       return [...payments]
     })
+    updatePayments.forEach(payment => this.getRoomState(payment.roomId, this.user().id).then(roomState => {
+      this.roomStatesCash.set(payment.roomId, roomState);
+      this.roomStatesMap.update(roomStatesMap => new Map([...roomStatesMap.entries(), [payment.roomId, roomState]]))
+    }))
+
     this.updatePaymentsMap = null;
   }
 
@@ -331,7 +349,17 @@ export class StateService {
     this.updateSharesMap.set(share.id, share);
   }
   updateShares() {
-    this.sharesMap.update(sharesMap => new Map([...sharesMap.entries(), ...this.updateSharesMap!.entries()]))
+
+    // this.sharesMap.update(sharesMap => new Map([...sharesMap.entries(), ...this.updateSharesMap!.entries()]))
+    [...this.updateSharesMap!.values()].forEach(share => {
+      this.updatePayment(this.paymentsMap().get(share.paymentId)!)
+    })
+    const updatedShares = [...this.updateSharesMap!.values()];
+    updatedShares.forEach(share => this.getRoomState(share.roomId, this.user().id).then(roomState => {
+      this.roomStatesCash.set(share.roomId, roomState);
+      this.roomStatesMap.update(roomStatesMap => new Map([...roomStatesMap.entries(), [share.roomId, roomState]]))
+    }))
+
     this.updateSharesMap = null;
   }
 
@@ -345,12 +373,13 @@ export class StateService {
   }
   deleteShares() {
     let shareIdsMapBaPayment = this.shareIdsMapBaPayment();
-    const sharesMap = this.sharesMap()
+    const sharesMap = this.sharesMap();
     for (const [shareId, paymentId] of [...this.deleteSharesMap!.entries()]) {
       const paymentShareIds = shareIdsMapBaPayment.get(paymentId) || [];
       shareIdsMapBaPayment = new Map([...shareIdsMapBaPayment.entries(), [paymentId, paymentShareIds.filter(id => id !== shareId)]])
       sharesMap.delete(shareId)
     }
+
     this.sharesMap.set(sharesMap);
     this.shareIdsMapBaPayment.set(shareIdsMapBaPayment);
     this.deleteSharesMap = null;
@@ -366,8 +395,8 @@ export class StateService {
     this.rooms.set(rooms);
   }
 
-  async getRoomState(room: IRoom, userId: string): Promise<IRoomState> {
-    const { debts, hasUnsharedPayment, unchecked } = await this.apiService.getRoomState(room.id);
+  async getRoomState(roomId: string, userId: string): Promise<IRoomState> {
+    const { debts, hasUnsharedPayment, unchecked } = await this.apiService.getRoomState(roomId);
     const balance = debts.reduce<number>((res, debt) => {
       if (debt.owner === userId) {
         res += debt.amount;

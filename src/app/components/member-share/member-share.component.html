@@ -1,10 +1,11 @@
-<mat-checkbox class="share__active" [formControl]="activeControl"></mat-checkbox>
-<div class="share__name">{{member()?.name}}</div>
-<button mat-fab (click)="changeShareValue(-1)">
-  <mat-icon>horizontal_rule</mat-icon>
-</button>
-<div class="share__share">{{shareControl.getRawValue()}}</div>
-<button mat-fab (click)="changeShareValue(+1)">
-  <mat-icon>add</mat-icon>
-</button>
-<input class="share__balance" type="number" [formControl]="balanceControl">
+<app-state-button class="block block--whole block--close block--short" [button]="activeButton" [value]="this.activeControl.getRawValue()"></app-state-button>
+<div class="block block--whole block--close block--short">{{member()?.name}}</div>
+<div class="block block--whole block--close block--short block--last share-buttons">
+  <app-button class="block block--whole block--close block--short" [button]="decreaseShareButton"></app-button>
+  <div class="block block--whole block--close block--short">{{shareControl.getRawValue()}}</div>
+  <app-button class="block block--whole block--close block--short" [button]="increaseShareButton"></app-button>
+</div>
+<input class="block block--whole block--close block--short input input--amount" type="number" [formControl]="balanceControl">
+@if(isUnchecked()) {
+  <app-button class="block block--whole block--close block--short" [button]="acceptButton"></app-button>
+}

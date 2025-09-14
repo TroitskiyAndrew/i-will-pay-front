@@ -1,0 +1,30 @@
+@if (this.multiMode()) {
+  @for (state of states(); track state[0]) {
+    <app-button
+    [button]="button()"
+    [stateClass]="state[1].stateClass + ' state'"
+    [icon]="state[1].icon || ''"
+    [content]="state[1].content || ''"
+    [context]="context()"
+    [contextItems]="contextItems()"
+    [value]="state[0]"
+    [hover]="hover()"
+    [stopEvent]="false"
+    (click)="handleClick($event, state[0])"
+  ></app-button>
+  }
+} @else {
+  <app-button
+    [button]="button()"
+    [stateClass]="stateClass()"
+    [icon]="icon()"
+    [content]="content()"
+    [context]="context()"
+    [contextItems]="contextItems()"
+    [hover]="hover()"
+    [stopEvent]="false"
+    (click)="handleClick($event)"
+  ></app-button>
+}
+
+

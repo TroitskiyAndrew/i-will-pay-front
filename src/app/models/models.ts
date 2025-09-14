@@ -106,3 +106,47 @@ export type SocketMessage<A extends SocketAction> =
     payers: string[]
     [payer: string]: string[]
   }
+
+
+  export type FilterValue =
+  | boolean
+  | number
+  | string
+  | string[]
+  | null
+  | undefined;
+
+  export interface ActionContext {
+    context?: unknown;
+    mainItem?: unknown;
+    value?: unknown;
+  }
+
+  export interface IButton<T = void> {
+    icon: string;
+    content?: string;
+    class?: string;
+    actionValue?: () => Promise<unknown>;
+    valueFn?: () => FilterValue;
+    actionPermission?: (
+      actionContext?: ActionContext,
+      contextItems?: unknown[]
+    ) => Promise<boolean>;
+    action: (actionContext: ActionContext) => T | Promise<T>;
+    afterAction?: (contextItems: unknown[]) => T | Promise<T>;
+    commonAction?: boolean;
+    disabled?: Signal<boolean> | WritableSignal<boolean>;
+    disabledFn?: () => boolean;
+    selected?: Signal<boolean> | WritableSignal<boolean>;
+    show?: Signal<boolean> | WritableSignal<boolean>;
+    showFn?: (actionContext: ActionContext) => boolean;
+    multiMode?: WritableSignal<boolean>;
+    statesMapFn?: () => Map<FilterValue, IButtonState>;
+    valueAfterMulti?: FilterValue;
+  }
+
+  export interface IButtonState {
+    stateClass: string;
+    content?: string;
+    icon?: string;
+  }

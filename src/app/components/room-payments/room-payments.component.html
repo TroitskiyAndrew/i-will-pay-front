@@ -1,7 +1,14 @@
-<div (click)="toggleMembers()">Платежи</div>
-@if(showMembers()){
+<div class="block block--whole block--close">
+  <div class="block block--whole block--close block--auto">
+    Платежи
+  </div>
+  <app-button class="block block--whole block--last block--short" [button]="expandButton"></app-button>
+</div>
+@if(showPayments()){
   @for (paymentId of this.stateService.paymentIds(); track paymentId) {
-    <app-payment-button [paymentId]="paymentId"></app-payment-button>
+    @if(paymentId !== newPaymentId){
+      <app-payment class="block block--vertical block--whole block--close"  [paymentId]="paymentId" [editModeInput]="false"></app-payment>
+    }
   }
 
 }

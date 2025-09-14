@@ -1,12 +1,25 @@
-<div class="wrapper">
-
-  @if(!this.stateService.currentRoom()){
-    <app-user-rooms></app-user-rooms>
+<div class="block block--vertical block--whole block--close wrapper">
+  @if (this.errorService.errorMessage()) {
+    <div class="block block--vertical block--error">
+      <div class="block error" > {{this.errorService.errorMessage()}} </div>
+      <div class="block">
+        <app-button [button]="errorButton"></app-button>
+      </div>
+    </div>
   } @else {
-    <button (click)="goBack()">Назад</button>
-    <app-room-members></app-room-members>
-    <app-room-payments></app-room-payments>
-    <app-payment></app-payment>
+    @if (stateService.createPaymentMode()) {
+      <app-payment class="block block--vertical block--whole block--close wrapper" [editModeInput]="true"></app-payment>
+    } @else {
+      <app-header class="block" ></app-header>
+      @if(!this.stateService.currentRoom()){
+        <app-user-rooms class="block block--vertical block--first-vertical" ></app-user-rooms>
+      } @else {
+        <app-room-members class="block block--vertical"></app-room-members>
+        <app-room-payments class="block block--vertical"></app-room-payments>
+        @if (!this.stateService.createPaymentMode() && this.stateService.currentRoom() != null) {
+          <app-button class="block block--last-vertical" [button]="createButton"></app-button>
+        }
+      }
+    }
   }
-  <div>{{this.errorService.errorMessage()}}</div>
 </div>

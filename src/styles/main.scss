@@ -18,6 +18,8 @@
 
 // 5. Components
 // @forward "components/button";
+ @forward "components/block";
+ @forward "components/input";
 
 // 6. Page-specific styles
 @forward "pages/home";

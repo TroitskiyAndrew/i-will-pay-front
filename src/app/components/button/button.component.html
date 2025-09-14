@@ -1,0 +1,10 @@
+@if(showValue()){
+  <button mat-fab [ngClass]="classValue()" (click)="handleClick($event)"
+    [disabled]="disabled()">
+    @if (contentValue()) {
+      <div class="content text-content">{{contentValue()}}</div>
+    } @else {
+      <mat-icon [ngClass]="['content', '_icon_' + iconValue()]">{{ iconValue() }}</mat-icon>
+    }
+  </button>
+}
