@@ -9,8 +9,10 @@ import { getNewPayment } from '../constants/constants';
 })
 export class StateService {
 
+  appLink = 'https://t.me/I_WillPay_bot'
   user = signal<IUser>({ id: '', telegramId: 0, name: '' });
   roomId = signal<string>('');
+  roomLink = computed(() => `${this.appLink}?startapp=roomId=${this.roomId}`)
   rooms = signal<IRoom[]>([]);
   roomStatesMap = signal<Map<string, IRoomState>>(new Map());
   totalState = computed(() => {

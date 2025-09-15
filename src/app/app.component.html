@@ -22,7 +22,10 @@
               <div class="block block--auto block--whole">
                 {{this.stateService.currentRoom()?.name || ''}}
               </div>
-              <app-button class="block block--whole block--short block--last" [button]="editGroupNameBUtton"></app-button>
+              <div class="block block--auto block--whole block--last">
+                <app-button class="block block--whole block--short" [button]="editGroupNameBUtton"></app-button>
+                <app-button class="block block--whole block--short " [button]="createLinkButton" (click)="clipboard.copy(stateService.roomLink())"></app-button>
+              </div>
             </div>
           }
         </div>

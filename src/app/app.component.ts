@@ -12,6 +12,7 @@ import { NewItemComponent } from "./components/new-item/new-item.component";
 import { UpdateItemComponent } from "./components/update-item/update-item.component";
 import { ApiService } from './services/api.service';
 import { RoomDebtsComponent } from "./components/room-debts/room-debts.component";
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-root',
@@ -40,8 +41,13 @@ export class AppComponent {
     show: computed(() => !this.stateService.membersMapByUser().get(this.stateService.user().id)?.isGuest),
     class: 'square'
   }
+  createLinkButton: IButton = {
+    icon: 'link',
+    action: () => {},
+    class: 'square'
+  }
 
-  constructor(public stateService: StateService, public errorService: ErrorService, private apiService: ApiService){
+  constructor(public stateService: StateService, public errorService: ErrorService, private apiService: ApiService, public clipboard: Clipboard){
     this.stateService.init()
   }
 
