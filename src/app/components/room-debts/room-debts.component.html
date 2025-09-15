@@ -6,7 +6,7 @@
   <div [ngClass]="['block', 'block--whole' ,  'block--close', 'block--short', 'block--last', balance() < 0 ? 'red' : 'green']">{{balance()}}</div>
   <app-state-button class="block block--whole block--short" [button]="expandButton"></app-state-button>
 </div>
-@if(stateService.showDebts()){
+@if(stateService.showDebts() && debts().length){
   <div class="block block--vertical block--vertical-gap block--vertical-borders">
     @for (debt of debts(); track (debt.owner + debt.debtor)) {
       <app-debt class="block block--close block--bordered" [debt]="debt"></app-debt>
