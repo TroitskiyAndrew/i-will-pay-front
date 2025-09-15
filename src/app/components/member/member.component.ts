@@ -6,10 +6,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from '../../services/api.service';
 import { StateButtonComponent } from "../state-button/state-button.component";
 import { IButton } from '../../models/models';
+import { ButtonComponent } from "../button/button.component";
 
 @Component({
   selector: 'app-member',
-  imports: [CommonModule, MatIconModule, MatButtonModule, StateButtonComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, StateButtonComponent, ButtonComponent],
   templateUrl: './member.component.html',
   styleUrl: './member.component.scss'
 })
@@ -43,6 +44,13 @@ export class MemberComponent {
     ]),
   }
 
+  createLinkButton: IButton = {
+    icon: 'link',
+    action: async () => navigator.clipboard.writeText(`${this.stateService.appLink}?startapp=userId=${this.member()?.userId}`),
+    showFn: ()=> this.stateService.usersMap.get(this.member()!.userId)?.telegramId == null,
+    class: 'square'
+  }
+
   constructor(public stateService: StateService, private apiService: ApiService) { }
 
   payFor() {
@@ -58,5 +66,7 @@ export class MemberComponent {
     const member = this.member()!
     this.apiService.updateMember({ ...member, payer: member.userId })
   }
+
+
 
 }

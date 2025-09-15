@@ -12,7 +12,7 @@ export class StateService {
   appLink = 'https://t.me/I_WillPay_bot'
   user = signal<IUser>({ id: '', telegramId: 0, name: '' });
   roomId = signal<string>('');
-  roomLink = computed(() => `${this.appLink}?startapp=roomId=${this.roomId}`)
+  roomLink = computed(() => `${this.appLink}?startapp=roomId=${this.roomId()}`)
   rooms = signal<IRoom[]>([]);
   roomStatesMap = signal<Map<string, IRoomState>>(new Map());
   totalState = computed(() => {
@@ -48,6 +48,7 @@ export class StateService {
   memberIds = signal<string[]>([])
   membersMap = signal<Map<string, IMember>>(new Map());
   membersMapByUser = signal<Map<string, IMember>>(new Map());
+  usersMap = new Map<string, IUser>()
 
   createPaymentMode = signal(false);
   newPayment = getNewPayment('init');
@@ -80,7 +81,13 @@ export class StateService {
           res[member.payer] = res[member.payer] ? [...res[member.payer], member.id] : [member.id]
         }
         return res;
-      }, { payers: [] } as ISplittedMembers)
+      }, { payers: [] } as ISplittedMembers);
+      members.forEach(async member => {
+        if(!this.usersMap.has(member.userId)){
+          const user = await this.apiService.getUser(member.userId);
+          this.usersMap.set(user!.id, user!)
+        }
+      })
       const memberIds: string[] = []
       splittedMembers.payers.forEach(payer => {
         memberIds.push(payer)

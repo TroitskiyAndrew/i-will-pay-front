@@ -43,7 +43,7 @@ export class AppComponent {
   }
   createLinkButton: IButton = {
     icon: 'link',
-    action: () => {},
+    action: async () => navigator.clipboard.writeText(this.stateService.roomLink()),
     class: 'square'
   }
 

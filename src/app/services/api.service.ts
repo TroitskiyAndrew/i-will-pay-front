@@ -38,6 +38,14 @@ export class ApiService {
       .catch(this.handleError.bind(this));
   }
 
+  getUser(userId: string){
+    const url = `${environment.backendUrl}/users/${userId}`;
+    return this.http
+      .get<IUser>(url)
+      .toPromise()
+      .catch(this.handleError.bind(this));
+  }
+
   getRooms() {
     const url = `${environment.backendUrl}/rooms`;
     return this.http

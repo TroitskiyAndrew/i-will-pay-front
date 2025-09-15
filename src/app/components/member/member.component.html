@@ -1,8 +1,9 @@
 @if (member()) {
   <div [ngClass]="{'member block block--whole block--close': true, 'not-payer': member()!.userId !== member()!.payer}">{{member()?.name}}</div>
-  @if (member()?.userId !== stateService.user().id) {
-    <div class="actions">
+  <div class="actions">
+    @if (member()?.userId !== stateService.user().id) {
       <app-state-button [button]="submissiveButton" [value]="member()?.payer === stateService.user().id"></app-state-button>
-    </div>
-  }
+    }
+    <app-button [button]="createLinkButton"></app-button>
+  </div>
 }
