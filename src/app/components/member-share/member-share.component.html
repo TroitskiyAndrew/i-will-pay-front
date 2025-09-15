@@ -1,15 +1,43 @@
-<app-state-button class="block block--whole block--close block--short" [button]="activeButton" [value]="this.activeControl.getRawValue()"></app-state-button>
-<div [ngClass]="{'block block--whole block--close block--short': true, 'payer': isPayer()}">{{member()?.name}}</div>
-<div class="block block--whole block--close block--short block--last share-buttons">
-  <app-button class="block block--whole block--close block--short" [button]="decreaseShareButton"></app-button>
-  <div class="block block--whole block--close block--short">{{shareControl.getRawValue()}}</div>
-  <app-button class="block block--whole block--close block--short" [button]="increaseShareButton"></app-button>
+
+
+<div class="block block--whole block--vertical block--vertical-gap block--short">
+  @if (isFirst()){
+    <div class="block block--whole block--centred opacity">Д</div>
+  }
+  <app-state-button class="block block--whole block--close block--short" [button]="activeButton" [value]="this.activeControl.getRawValue()"></app-state-button>
+
 </div>
-@if (disableMoneyInputs()) {
-  <div class="block block--whole block--close block--short"> {{lastShare?.balance || 0}}</div>
-} @else {
-  <input class="block block--whole block--close block--short input input--amount" type="number" [formControl]="balanceControl">
-}
+<div class="block block--whole block--vertical block--vertical-gap block--short">
+  @if (isFirst()){
+    <div class="block block--whole block--centred  opacity">С</div>
+  }
+  <div [ngClass]="{'block block--whole block--close block--short': true, 'payer': isPayer()}">{{member()?.name}}</div>
+
+</div>
+
+<div class="block block--whole block--vertical block--vertical-gap block--short block--last">
+  @if (isFirst()){
+    <div class="block block--whole block--centred "> Доля </div>
+  }
+
+  <div class="block block--whole block--close block--short  share-buttons">
+    <app-button class="block block--whole block--close block--short" [button]="decreaseShareButton"></app-button>
+    <div class="block block--whole block--close block--short">{{shareControl.getRawValue()}}</div>
+    <app-button class="block block--whole block--close block--short" [button]="increaseShareButton"></app-button>
+  </div>
+</div>
+
+<div class="block block--whole block--vertical block--vertical-gap block--short">
+  @if (isFirst()){
+    <div class="block block--whole block--centred"> Сумма </div>
+  }
+
+  @if (disableMoneyInputs()) {
+    <div class="block block--whole block--close block--short"> {{lastShare?.balance || 0}}</div>
+  } @else {
+    <input class="block block--whole block--close block--short input input--amount" type="number" [formControl]="balanceControl">
+  }
+</div>
 
 @if(isUnchecked()) {
   <app-button class="block block--whole block--close block--short" [button]="acceptButton"></app-button>

@@ -47,10 +47,10 @@
 
 </div>
 @if(editMode()){
-<div class="block block--vertical block--vertical-borders">
-  @for (memberId of stateService.memberIds(); track memberId) {
-  <app-member-share class="block block--close" [memberId]="memberId" [sharesMap]="sharesMap()"
-    (changeShare)="onShareChanged()"></app-member-share>
+<div class="block block--vertical block--vertical-gap block--vertical-borders">
+  @for (memberId of stateService.memberIds(); track memberId; let isFirst = $first) {
+  <app-member-share class="block block--close block--whole" [memberId]="memberId" [sharesMap]="sharesMap()"
+    [isFirst]="isFirst" (changeShare)="onShareChanged()"></app-member-share>
   }
 </div>
 <div class="block block--last-vertical ">

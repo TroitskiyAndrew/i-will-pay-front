@@ -21,6 +21,7 @@ import { CommonModule } from '@angular/common';
 export class MemberShareComponent {
 
   memberId = input<string>('');
+  isFirst = input(false);
   sharesMap = input<Map<string, IShare>>(new Map());
   share = computed(() => this.sharesMap().get(this.memberId()));
   isPayer = computed(() => {
