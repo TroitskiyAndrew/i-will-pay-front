@@ -31,7 +31,7 @@ export class AppComponent {
   }
   createButton: IButton = {
     icon: '',
-    content: 'Я плачу',
+    content: 'Новый платеж',
     action: () => this.stateService.createPaymentMode.set(true),
     class: '',
   }
