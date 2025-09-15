@@ -62,6 +62,9 @@ export class StateService {
   constructor(private apiService: ApiService, private socketService: SocketService) {
     effect(async () => {
       const rooms = this.rooms();
+      if(rooms.length === 1){
+        this.roomId.set(rooms[0].id)
+      }
       this.socketService.init(this.user().id, rooms.map(room => room.id))
     })
     effect(async () => {
