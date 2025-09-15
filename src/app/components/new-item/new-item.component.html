@@ -1,2 +1,7 @@
 <input class="input" type="text" [formControl]="control">
-<app-button class="block block--short block--whole block--close" [button]="createButton"></app-button>
+@if(confirmation()){
+  <app-button class="block block--short block--whole block--close block--last" [button]="confirmButton"></app-button>
+  <app-button class="block block--short block--whole block--close" [button]="cancelButton"></app-button>
+} @else {
+  <app-button class="block block--short block--whole block--close" [button]="createButton"></app-button>
+}

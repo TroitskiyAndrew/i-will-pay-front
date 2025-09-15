@@ -15,6 +15,10 @@ export class UpdateItemComponent {
   control = new FormControl<string | number>('', {nonNullable: true, validators: [Validators.required]});
   newValue = output<string | number>();
   controlChange = toSignal(this.control.valueChanges);
+  value = input<string | number>('');
+  type = computed(() => {
+    return typeof this.value() === 'string' ? 'text' : 'number'
+  })
   createButton: IButton = {
     icon: 'check',
     action: () => {
@@ -27,10 +31,6 @@ export class UpdateItemComponent {
     }),
     class: 'square'
   }
-  value = input<string | number>('');
-  type = computed(() => {
-    return typeof this.value() === 'string' ? 'text' : 'number'
-  })
   cancelButton: IButton = {
     icon: 'cancel',
     action: () => {

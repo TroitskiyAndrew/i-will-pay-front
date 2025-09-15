@@ -1,4 +1,4 @@
-import { Component, effect, output, signal } from '@angular/core';
+import { Component, computed, effect, output, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,11 +18,28 @@ export class NewItemComponent {
   controlChange = toSignal(this.control.valueChanges);
   createButton: IButton = {
     icon: 'add',
+    action: () => this.confirmation.set(true),
+    disabled: signal(false),
+    class: 'square'
+  }
+  confirmation = signal(false);
+  confirmButton: IButton = {
+    icon: 'check',
     action: () => {
-      if(this.control.invalid){
-        return;
-      }
       this.newItem.emit(this.control.getRawValue());
+      this.confirmation.set(false);
+      this.control.setValue('')
+    },
+    disabled: computed(() => {
+      this.controlChange()
+      return this.control.invalid
+    }),
+    class: 'square'
+  }
+  cancelButton: IButton = {
+    icon: 'cancel',
+    action: () => {
+      this.confirmation.set(false);
       this.control.setValue('')
     },
     disabled: signal(false),
