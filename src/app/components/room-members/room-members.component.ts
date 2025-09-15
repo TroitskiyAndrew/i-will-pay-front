@@ -18,8 +18,7 @@ export class RoomMembersComponent {
 
   expandButton: IButton = {
     icon: 'expand_more',
-    action: () => this.stateService.showMembers.update(val => !val),
-    valueFn: () => this.stateService.showMembers(),
+    action: () => {},
     class: 'square border-less',
     statesMapFn: () => new Map([
       [true, { stateClass: '', icon: 'keyboard_arrow_down' }],

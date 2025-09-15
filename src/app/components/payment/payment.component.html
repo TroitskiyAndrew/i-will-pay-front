@@ -1,4 +1,4 @@
-<div class="block block--vertical ">
+<div class="block block--vertical " (click)="toggleShares()">
   <div class="block block--whole block--close">
     @if (this.state()?.unchecked || payment()?.payer === this.stateService.user().id &&  payment()?.amount !== payment()?.shared) {
 
@@ -23,7 +23,7 @@
       }
       @if (!payment()?.debt) {
     <div [ngClass]="['block', 'block--whole',  'block--close', 'block--short',  'block--last', color()]">      {{balance()}}    </div>
-      <app-state-button class="block block--whole block--close block--short" [button]="expandButton" [value]="this.editMode()"></app-state-button>
+      <app-state-button class="block block--whole block--close block--short" [button]="expandButton" [value]="this.editMode()" [stopEvent]="false"></app-state-button>
     } @else {
       <div class="block block--whole block--close block--short block--last">      {{amount()}}    </div>
     }

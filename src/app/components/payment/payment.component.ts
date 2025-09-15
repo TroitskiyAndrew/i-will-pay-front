@@ -251,19 +251,22 @@ export class PaymentComponent {
   }
   expandButton: IButton = {
     icon: 'expand_more',
-    action: () => {this._editMode.update(val => {
-      if(val){
-        this.stateService.payments.update(payments => [...payments]);
-      }
-      return !val
-    })},
-
+    action: () => {},
     class: 'square border-less',
-    show: computed(() => !this.editModeInput()),
+    show: computed(() => !this.stateService.createPaymentMode()),
     statesMapFn: () => new Map([
       [true, { stateClass: '', icon: 'keyboard_arrow_down' }],
       [false, { stateClass: '', icon: 'keyboard_arrow_left' }],
     ]),
+  }
+
+  toggleShares(){
+    this._editMode.update(val => {
+      if(val){
+        this.stateService.payments.update(payments => [...payments]);
+      }
+      return !val
+    })
   }
 
   saveButton: IButton = {

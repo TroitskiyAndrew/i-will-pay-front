@@ -24,8 +24,7 @@ export class RoomPaymentsComponent {
 
   expandButton: IButton = {
     icon: 'expand_more',
-    action: () => this.stateService.showPayments.update(val => !val),
-    valueFn: () => this.stateService.showPayments(),
+    action: () => {},
     class: 'square border-less',
     statesMapFn: () => new Map([
       [true, { stateClass: '', icon: 'keyboard_arrow_down' }],
@@ -99,7 +98,7 @@ export class RoomPaymentsComponent {
     this.apiService.createMember(this.stateService.roomId(), newMember);
   }
 
-  toggleMembers(){
+  toggleRooms(){
     this.stateService.showPayments.update(val => !val)
   }
 

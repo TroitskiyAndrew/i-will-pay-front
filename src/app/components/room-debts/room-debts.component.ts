@@ -21,8 +21,7 @@ export class RoomDebtsComponent {
   debts = computed(()=> this.stateService.roomStatesMap().get(this.stateService.roomId())?.debts || [])
   expandButton: IButton = {
     icon: 'expand_more',
-    action: () => this.stateService.showDebts.update(val => !val),
-    valueFn: () => this.stateService.showDebts(),
+    action: () => {},
     class: 'square border-less',
     statesMapFn: () => new Map([
       [true, { stateClass: '', icon: 'keyboard_arrow_down' }],
@@ -32,7 +31,7 @@ export class RoomDebtsComponent {
 
   constructor(public stateService: StateService, private apiService: ApiService){}
 
-  toggleMembers(){
+  toggleDebts(){
     this.stateService.showDebts.update(val => !val)
   }
 }

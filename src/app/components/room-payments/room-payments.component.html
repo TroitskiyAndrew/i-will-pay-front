@@ -1,4 +1,4 @@
-<div class="block block--close block--vertical-borders block--shrink">
+<div class="block block--close block--vertical-borders block--shrink" (click)="toggleRooms()">
 
   <div class="block block--whole block--close block--auto ">
     Платежи
@@ -8,7 +8,7 @@
     <app-state-button class="block block--whole block--short" [button]="errorButton" [value]="filterByErrors()"></app-state-button>
 
   </div>
-  <app-state-button class="block block--whole block--last block--short" [button]="expandButton"></app-state-button>
+  <app-state-button class="block block--whole block--last block--short" [button]="expandButton" [value]="stateService.showPayments()" [stopEvent]="false"></app-state-button>
 </div>
 @if(stateService.showPayments()){
   <div [ngClass]="{'block block--vertical block--vertical-gap': true, 'block--vertical-borders': !stateService.showPayments()}">

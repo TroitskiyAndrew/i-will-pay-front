@@ -1,10 +1,10 @@
-<div class="block block--close block--vertical-borders block--shrink">
+<div class="block block--close block--vertical-borders block--shrink" (click)="toggleDebts()">
 
   <div class="block block--close block--auto block--whole">
     Долги
   </div>
   <div [ngClass]="['block', 'block--whole' ,  'block--close', 'block--short', 'block--last', balance() < 0 ? 'red' : 'green']">{{balance()}}</div>
-  <app-state-button class="block block--whole block--short" [button]="expandButton"></app-state-button>
+  <app-state-button class="block block--whole block--short" [button]="expandButton" [value]="stateService.showDebts()" [stopEvent]="false"></app-state-button>
 </div>
 @if(stateService.showDebts() && debts().length){
   <div class="block block--vertical block--vertical-gap block--vertical-borders">
