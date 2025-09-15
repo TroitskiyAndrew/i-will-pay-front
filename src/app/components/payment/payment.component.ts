@@ -15,7 +15,7 @@ import { getDate, getDateString } from '../../utils/utils';
 
 @Component({
   selector: 'app-payment',
-  imports: [ReactiveFormsModule, MemberShareComponent, ButtonComponent, CommonModule, StateButtonComponent],
+  imports: [ReactiveFormsModule, MemberShareComponent, ButtonComponent, CommonModule],
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.scss'
 })
@@ -128,7 +128,7 @@ export class PaymentComponent {
       const isPayer = payment?.payer === this.stateService.user().id;
       let newBalance = 0
       if (isPayer) {
-        newBalance = shares.reduce((res, share) => share.payer !== this.stateService.user().id ? res += share.balance : res, 0) || amountValue;
+        newBalance = shares.reduce((res, share) => share.payer !== this.stateService.user().id ? res += share.balance : res, 0);
       } else {
         newBalance = shares.reduce((res, share) => share.payer === this.stateService.user().id ? res -= share.balance : res, 0);
       }
@@ -249,18 +249,11 @@ export class PaymentComponent {
     class: 'square square--small border-less red-content',
     disabled: signal(true),
   }
-  expandButton: IButton = {
-    icon: 'expand_more',
-    action: () => {},
-    class: 'square border-less',
-    show: computed(() => !this.stateService.createPaymentMode()),
-    statesMapFn: () => new Map([
-      [true, { stateClass: '', icon: 'keyboard_arrow_down' }],
-      [false, { stateClass: '', icon: 'keyboard_arrow_left' }],
-    ]),
-  }
 
   toggleShares(){
+    if (this.stateService.createPaymentMode()){
+      return;
+    }
     this._editMode.update(val => {
       if(val){
         this.stateService.payments.update(payments => [...payments]);

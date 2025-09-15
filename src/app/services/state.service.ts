@@ -166,9 +166,6 @@ export class StateService {
             unchecked = true;
           }
         });
-        if (shares.length === 0) {
-          balance = payment.amount;
-        }
         shareIdsMapBaPayment.set(payment.id, shareIds)
         paymentStatesMap.set(payment.id, {
           balance,

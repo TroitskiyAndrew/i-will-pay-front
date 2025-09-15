@@ -1,51 +1,61 @@
 <div class="block block--vertical " (click)="toggleShares()">
-  <div class="block block--whole block--close">
-    @if (this.state()?.unchecked || payment()?.payer === this.stateService.user().id &&  payment()?.amount !== payment()?.shared) {
+  <div class="block block--whole block--close ">
+    <div class="block block--whole block--vertical block--short block--shrink">
+      @if (this.state()?.unchecked || payment()?.payer === this.stateService.user().id && payment()?.amount !==
+      payment()?.shared) {
+        <div class="block block--whole block--vertical block--short">
+          <app-button class="block block--whole block--short" [button]="warningButton"></app-button>
+          <app-button class="block block--whole block--short" [button]="errorButton"></app-button>
+        </div>
+      }
+      <div class="block block--whole block--short">
+        @if (canEdit()){
+        <input class="block block--whole block--close input--amount" type="number"
+          [formControl]="paymentForm.controls.amount">
+        } @else {
+        <div class="block block--whole block--close block--short"> {{amount()}} </div>
+        }
+      </div>
+    </div>
+    <div class="block block--vertical block--whole ">
+      <div class="block block--whole">
+        <div class="block block--whole block--close block--short"> {{payerName()}} </div>
+        @if (canEdit()){
+          <input class="block block--whole block--close block--last input--date" type="date"
+            [formControl]="paymentForm.controls.date">
+          }
+      </div>
+      @if (canEdit()){
+      <input class="input block block--whole block--close" type="text" [formControl]="paymentForm.controls.comment"
+        placeholder="комментарий">
+      } @else if (comment()) {
+      <div class="block block--whole block--close block--auto"> {{comment()}} </div>
+      }
+
+    </div>
+    @if(!this.canEdit()){
+      <div class="block block--whole block--auto block--last block--shrink">
+        <div class="block block--whole block--close block--last block--short block--last"> {{date()}} </div>
+      </div>
 
     }
-    <div class="block block--whole block--tight block--short">
-      <app-button class="block block--whole block--short" [button]="warningButton"></app-button>
-      <app-button class="block block--whole block--short" [button]="errorButton"></app-button>
+    @if (!payment()?.debt) {
+    <div [ngClass]="['block', 'block--whole',  'block--close', 'block--short', 'block--shrink', color()]"> {{balance()}}
     </div>
-      @if (canEdit()){
-        <input class="block block--whole block--close input--amount" type="number" [formControl]="paymentForm.controls.amount">
-      } @else {
-        @if (!payment()?.debt) {
-          <div class="block block--whole block--close block--short">      {{amount()}}    </div>
-          <div class="block block--whole block--close block--auto">      {{payerName()}}    </div>
-        }
-
-      }
-      @if (canEdit()){
-        <input class="block block--whole block--close block--last input--date" type="date" [formControl]="paymentForm.controls.date">
-      } @else {
-        <div class="block block--whole block--close block--last block--short">      {{date()}}    </div>
-      }
-      @if (!payment()?.debt) {
-    <div [ngClass]="['block', 'block--whole',  'block--close', 'block--short',  'block--last', color()]">      {{balance()}}    </div>
-      <app-state-button class="block block--whole block--close block--short" [button]="expandButton" [value]="this.editMode()" [stopEvent]="false"></app-state-button>
-    } @else {
-      <div class="block block--whole block--close block--short block--last">      {{amount()}}    </div>
     }
   </div>
-  @if (canEdit()){
-    <input class="input block block--whole block--close" type="text" [formControl]="paymentForm.controls.comment" placeholder="комментарий">
-  } @else if (comment()) {
-    <div class="block block--whole block--close block--auto">      {{comment()}}    </div>
-  }
+
 </div>
 @if(editMode()){
-  <div class="block block--vertical block--vertical-borders">
-    @for (memberId of stateService.memberIds(); track memberId) {
-      <app-member-share class="block block--close" [memberId]="memberId" [sharesMap]="sharesMap()" (changeShare)="onShareChanged()" ></app-member-share>
-    }
-  </div>
-  <div class="block block--last-vertical ">
-    <app-button class="block block--whole block--close" [button]="saveButton"></app-button>
-    <app-button class="block block--whole block--close" [button]="cancelButton"></app-button>
+<div class="block block--vertical block--vertical-borders">
+  @for (memberId of stateService.memberIds(); track memberId) {
+  <app-member-share class="block block--close" [memberId]="memberId" [sharesMap]="sharesMap()"
+    (changeShare)="onShareChanged()"></app-member-share>
+  }
+</div>
+<div class="block block--last-vertical ">
+  <app-button class="block block--whole block--close" [button]="saveButton"></app-button>
+  <app-button class="block block--whole block--close" [button]="cancelButton"></app-button>
 
-  </div>
+</div>
 }
-
-
-
