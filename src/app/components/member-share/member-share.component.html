@@ -33,7 +33,7 @@
   }
 
   @if (disableMoneyInputs()) {
-    <div class="block block--whole block--close block--short"> {{lastShare?.balance || 0}}</div>
+    <div class="block block--whole block--close block--short block--amount"> {{lastShare?.balance || 0}}</div>
   } @else {
     <input class="block block--whole block--close block--short input input--amount" type="number" [formControl]="balanceControl">
   }

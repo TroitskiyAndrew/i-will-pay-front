@@ -260,6 +260,12 @@ export class PaymentComponent {
     action: () => this.showPhoto.set(true),
     class: 'square square--small',
   }
+
+  hasIndicators = computed(() => {
+    const payment = this.payment()
+    return this.state()?.unchecked || payment?.payer === this.stateService.user().id && payment?.amount !==
+          payment?.shared
+  })
   warningButton: IButton = {
     icon: 'question_mark',
     action: () => { },
