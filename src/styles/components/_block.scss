@@ -33,6 +33,10 @@
     column-gap: 0px;
     flex-shrink: 0;
   }
+  &--opacity {
+    opacity: 0;
+  }
+
 
   &--vertical {
     flex-direction: column;
@@ -52,6 +56,9 @@
   }
   &--shrink {
     flex-shrink: 0;
+  }
+  &--shrink-1 {
+    flex-shrink: 1;
   }
   &--last{
     margin-left: auto;

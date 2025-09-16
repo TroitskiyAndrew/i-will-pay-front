@@ -2,14 +2,14 @@
 
 <div class="block block--whole block--vertical block--vertical-gap block--short">
   @if (isFirst()){
-    <div class="block block--whole block--centred opacity">Д</div>
+    <div class="block block--whole block--centred block--opacity">Д</div>
   }
   <app-state-button class="block block--whole block--close block--short" [button]="activeButton" [value]="this.activeControl.getRawValue()"></app-state-button>
 
 </div>
 <div class="block block--whole block--vertical block--vertical-gap block--short">
   @if (isFirst()){
-    <div class="block block--whole block--centred  opacity">С</div>
+    <div class="block block--whole block--centred  block--opacity">С</div>
   }
   <div [ngClass]="{'block block--whole block--close block--short': true, 'payer': isPayer()}">{{member()?.name}}</div>
 

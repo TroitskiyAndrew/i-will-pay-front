@@ -6,10 +6,12 @@ import { NewItemComponent } from "../new-item/new-item.component";
 import { IButton } from '../../models/models';
 import { ButtonComponent } from "../button/button.component";
 import { StateButtonComponent } from "../state-button/state-button.component";
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-room-members',
-  imports: [MemberComponent, NewItemComponent,  StateButtonComponent],
+  imports: [MemberComponent, NewItemComponent, StateButtonComponent, CommonModule],
   templateUrl: './room-members.component.html',
   styleUrl: './room-members.component.scss'
 })

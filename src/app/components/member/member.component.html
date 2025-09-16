@@ -1,9 +1,7 @@
-@if (member()) {
-  <div [ngClass]="{'member block block--whole block--close block--auto': true, 'not-payer': member()!.userId !== member()!.payer}">{{member()?.name}}</div>
-  <div class="block block--whole block--short block--last block--close">
-    @if (member()?.userId !== stateService.user().id) {
-      <app-state-button [button]="submissiveButton" [value]="member()?.payer === stateService.user().id"></app-state-button>
-    }
-    <app-button [button]="createLinkButton"></app-button>
-  </div>
-}
+<div [ngClass]="{'member block block--whole block--close block--auto': true, 'my-self': member()?.id === userMember()?.id}">{{member()?.name}}</div>
+    <div class="block block--whole block--short block--last block--close">
+      @if (member()?.userId !== stateService.user().id) {
+        <app-state-button [button]="submissiveButton" [value]="submissiveAction()"></app-state-button>
+      }
+      <app-button [button]="createLinkButton"></app-button>
+    </div>
