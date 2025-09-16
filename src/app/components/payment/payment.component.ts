@@ -22,7 +22,7 @@ import { getDate, getDateString } from '../../utils/utils';
 export class PaymentComponent {
   paymentId = input<string>(NEW_PAYMENT_ID);
   payment = computed(() => this.stateService.paymentsMap().get(this.paymentId()));
-  photos  = signal<string[]>([]);
+  photos = signal<string[]>([]);
   payerName = computed(() => this.stateService.membersMapByUser().get(this.payment()?.payer || '')?.name || '')
   state = computed(() => this.stateService.paymentStatesMap().get(this.paymentId()))
   balance = computed(() => this.state()?.balance || 0);
@@ -250,7 +250,7 @@ export class PaymentComponent {
       this.showPhoto.set(false);
       this.photos.set([])
     },
-    show: computed(()=> this.payment()?.payer === this.stateService.user().id),
+    show: computed(() => this.payment()?.payer === this.stateService.user().id),
     class: 'square square--small',
   }
 
@@ -263,7 +263,7 @@ export class PaymentComponent {
   hasIndicators = computed(() => {
     const payment = this.payment()
     return this.state()?.unchecked || payment?.payer === this.stateService.user().id && payment?.amount !==
-          payment?.shared
+      payment?.shared
   })
   warningButton: IButton = {
     icon: 'question_mark',
@@ -309,6 +309,41 @@ export class PaymentComponent {
       return this.paymentForm.invalid
     })
   }
+
+  canAcceptDelete = signal(false);
+  acceptDelete = signal(false);
+  deleteButton: IButton = {
+    icon: '',
+    content: 'удалить',
+    action: () => {
+      this.acceptDelete.set(true);
+      setTimeout(() => this.canAcceptDelete.set(true), 3000)
+    },
+    show: computed(() => this.paymentId() !== NEW_PAYMENT_ID),
+    class: '',
+
+  }
+
+  acceptDeleteButton: IButton = {
+    icon: '',
+    content: 'удалить',
+    action: () => {
+      this.apiService.deletePayment(this.paymentId());
+      this.acceptDelete.set(false);
+      this.canAcceptDelete.set(false);
+    },
+    class: '',
+    disabled: computed(() => !this.canAcceptDelete())
+
+  }
+
+  declineDeleteButton: IButton = {
+    icon: '',
+    content: 'отмена',
+    action: () => this.acceptDelete.set(false),
+    class: '',
+  }
+
 
   cancelButton: IButton = {
     icon: '',

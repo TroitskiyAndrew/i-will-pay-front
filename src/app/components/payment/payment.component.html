@@ -93,7 +93,17 @@
   }
 </div>
 <div class="block block--last-vertical ">
-  <app-button class="block block--whole block--close" [button]="saveButton"></app-button>
-  <app-button class="block block--whole block--close" [button]="cancelButton"></app-button>
+  @if(acceptDelete()){
+    <app-button class="block block--whole block--close" [button]="acceptDeleteButton"></app-button>
+    <app-button class="block block--whole block--close" [button]="declineDeleteButton"></app-button>
+
+  } @else {
+    <app-button class="block block--whole block--close" [button]="saveButton"></app-button>
+    @if(payment()?.payer === stateService.user().id){
+      <app-button class="block block--whole block--close" [button]="deleteButton"></app-button>
+    }
+    <app-button class="block block--whole block--close" [button]="cancelButton"></app-button>
+
+  }
 </div>
 }
