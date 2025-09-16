@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpBackend, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { ErrorService } from './error.service';
@@ -8,8 +8,11 @@ import { IDebt, IMember, IPayment, IRoom, IShare, IUser } from '../models/models
   providedIn: 'root'
 })
 export class ApiService {
+  private externalHttpClient: HttpClient;
 
-  constructor(private http: HttpClient, private errorService: ErrorService) { }
+  constructor(private http: HttpClient, private errorService: ErrorService, private httpBackend: HttpBackend) {
+    this.externalHttpClient = new HttpClient(this.httpBackend);
+  }
 
   handleError(error: Error) {
     this.errorService.showError(error);
@@ -172,5 +175,13 @@ export class ApiService {
       .delete<true>(url)
       .toPromise()
       .catch(this.handleError.bind(this));
+  }
+  uploadPhoto(file: File): Promise<string>{
+    const formData = new FormData();
+    formData.append('image', file);
+    return this.externalHttpClient.post(environment.uploadImageUrl, formData).toPromise().then((response: any) => response.data.url).catch((error) => {
+      console.log(error);
+      return null;
+    })
   }
 }

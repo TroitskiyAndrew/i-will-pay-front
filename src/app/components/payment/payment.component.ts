@@ -19,16 +19,15 @@ import { getDate, getDateString } from '../../utils/utils';
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.scss'
 })
-export class PaymentComponent implements AfterViewInit, OnDestroy {
-
-  @ViewChild('paymentElem') paymentElem!: ElementRef;
+export class PaymentComponent {
   paymentId = input<string>(NEW_PAYMENT_ID);
   payment = computed(() => this.stateService.paymentsMap().get(this.paymentId()));
+  photos  = signal<string[]>([]);
   payerName = computed(() => this.stateService.membersMapByUser().get(this.payment()?.payer || '')?.name || '')
   state = computed(() => this.stateService.paymentStatesMap().get(this.paymentId()))
   balance = computed(() => this.state()?.balance || 0);
   color = computed(() => {
-    if(this.payment()?.debt){
+    if (this.payment()?.debt) {
       return ''
     }
     return this.balance() < 0 ? 'red' : 'green';
@@ -36,17 +35,17 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
   amount = computed(() => this.state()?.amount || 0);
   comment = computed(() => {
     const payment = this.payment();
-    if(!payment){
+    if (!payment) {
       return '';
     }
-    if(payment.debt){
+    if (payment.debt) {
       const isPayer = payment.payer === this.stateService.user().id;
-      if(isPayer){
+      if (isPayer) {
         const share = [...this.sharesMap().values()][0];
         const member = this.stateService.membersMapByUser().get(share.payer)
         return `Отдал деньги ${member?.name || ''}`
       }
-     return `Получил деньги от ${this.payerName()}`
+      return `Получил деньги от ${this.payerName()}`
     } else {
       return this.payment()?.comment || ''
     }
@@ -64,6 +63,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
     comment: new FormControl('', { nonNullable: true }),
     date: new FormControl(new Date().toISOString().substring(0, 10), { nonNullable: true, validators: [Validators.required] })
   });
+
   defaultSharesMap = new Map<string, IShare>();
   triggerSharesMap = signal(0);
   paymentStatesMap = new Map();
@@ -98,7 +98,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
     shares.forEach(share => {
 
       if (share.amount !== null) {
-        if(share.balance !== share.amount){
+        if (share.balance !== share.amount) {
           this.updateConfirmation(payment, share, userId)
         }
         share.balance = share.amount;
@@ -119,7 +119,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
       newBalance = Math.max(newBalance, 0)
       amountCents -= newBalance;
       newBalance = newBalance / 100
-      if(share.balance !== newBalance){
+      if (share.balance !== newBalance) {
         this.updateConfirmation(payment, share, userId)
       }
       share.balance = newBalance;
@@ -141,13 +141,13 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
 
   })
 
-  updateConfirmation(payment: IPayment | undefined, share: IShare, userId: string){
-    if(userId === payment?.payer){
+  updateConfirmation(payment: IPayment | undefined, share: IShare, userId: string) {
+    if (userId === payment?.payer) {
       share.confirmedByPayer = true;
     } else {
       share.confirmedByPayer = false;
     }
-    if([share.payer, share.userId].includes(userId)){
+    if ([share.payer, share.userId].includes(userId)) {
       share.confirmedByUser = true;
     } else {
       share.confirmedByUser = false;
@@ -156,7 +156,9 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
   amountChange = toSignal(this.paymentForm.controls.amount.valueChanges)
   formChange = toSignal(this.paymentForm.valueChanges)
   shared = computed(() => [...this.sharesMap().values()].reduce((res, share) => res += share.balance, 0));
-  done = output<{payment: IPayment, shares: IShare[]}>()
+  done = output<{ payment: IPayment, shares: IShare[] }>()
+  showPhoto = signal(false);
+
 
   constructor(public stateService: StateService, private socketService: SocketService, private apiService: ApiService) {
     effect(() => {
@@ -164,7 +166,8 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
       if (payment) {
         this.paymentForm.controls.amount.setValue(payment.amount)
         this.paymentForm.controls.comment.setValue(payment.comment)
-        this.paymentForm.controls.date.setValue(getDate(payment.date))
+        this.paymentForm.controls.date.setValue(getDate(payment.date));
+        this.photos.set(payment.photos)
       }
     })
     effect(() => {
@@ -174,7 +177,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
       const memberIds = this.stateService.memberIds();
       let newMembers = 0
       memberIds.forEach(memberId => {
-        if (this.defaultSharesMap.has(memberId)){
+        if (this.defaultSharesMap.has(memberId)) {
           return;
         }
         newMembers++
@@ -188,17 +191,13 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
     })
   }
 
-  ngAfterViewInit() {
-    this.paymentElem.nativeElement.addEventListener('click', this.toggleSharesFn, { capture: true });
-  }
-
   getPayment(): Omit<IPayment, 'id'> {
     const payment = this.payment();
     return {
       ...this.paymentForm.getRawValue(),
       roomId: payment?.roomId || this.stateService.roomId(),
       payer: payment?.payer || this.stateService.user().id,
-      photos: [],
+      photos: this.photos(),
       date: getDateString(this.paymentForm.controls.date.getRawValue()),
       shared: this.shared(),
     }
@@ -223,7 +222,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
     const payment = this.getPayment();
     this._editMode.set(false)
     if (paymentId === NEW_PAYMENT_ID) {
-      this.stateService.paymentStatesMap.update(paymentStatesMap => new Map([...paymentStatesMap.entries(), [paymentId, {balance: 0,  unchecked: false, amount: 0}]]))
+      this.stateService.paymentStatesMap.update(paymentStatesMap => new Map([...paymentStatesMap.entries(), [paymentId, { balance: 0, unchecked: false, amount: 0 }]]))
       await this.apiService.createPayment(payment, shares)
     } else {
       await this.apiService.updatePayment({ id: paymentId, ...payment }, shares)
@@ -235,45 +234,56 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
 
 
 
+  fileButton: IButton = {
+    icon: 'attach_file',
+    action: () => this.showPhoto.set(true),
+    class: 'square square--small',
+  }
+
+  closeFileButton: IButton = {
+    icon: 'cancel',
+    action: () => this.showPhoto.set(false),
+    class: 'square square--small',
+  }
+
+  photoButton: IButton = {
+    icon: 'photo',
+    action: () => this.showPhoto.set(true),
+    class: 'square square--small',
+  }
   warningButton: IButton = {
     icon: 'question_mark',
-    action: () => {},
+    action: () => { },
     class: 'square square--small border-less stroke-content yellow-content',
     show: computed(() => this.state()?.unchecked || false),
     disabled: signal(true),
   }
   errorButton: IButton = {
     icon: 'error_outline',
-    action: () => {},
+    action: () => { },
     show: computed(() => {
       const payment = this.payment();
-      if(!payment){
+      if (!payment) {
         return false;
       }
-      return payment.payer === this.stateService.user().id &&  payment.amount !== payment.shared
+      return payment.payer === this.stateService.user().id && payment.amount !== payment.shared
     }),
     class: 'square square--small border-less red-content',
     disabled: signal(true),
   }
 
-  toggleShares(event: Event){
-    if (this.stateService.createPaymentMode()){
+  toggleShares() {
+    if (this.stateService.createPaymentMode()) {
       return;
-    }
-    const target = event.target as HTMLElement;
-    if (target.tagName.toLowerCase() === 'input') {
-      return
     }
 
     this._editMode.update(val => {
-      if(val){
+      if (val) {
         this.stateService.payments.update(payments => [...payments]);
       }
       return !val
     })
   }
-
-  toggleSharesFn = this.toggleShares.bind(this)
 
   saveButton: IButton = {
     icon: '',
@@ -297,11 +307,19 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
     class: '',
   }
 
-  finish(){
+  async onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const url = await this.apiService.uploadPhoto(input.files[0])
+      this.photos.set([url]);
+    }
+  }
+
+  finish() {
     this._editMode.update(val => !val)
   }
 
-  ngOnDestroy(): void {
-    this.paymentElem.nativeElement.removeEventListener('click', this.toggleSharesFn, { capture: true });
+  stopEvent(event: Event) {
+    event.stopImmediatePropagation()
   }
 }
