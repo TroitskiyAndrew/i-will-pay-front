@@ -44,12 +44,17 @@
           @if(photos().length){
             <app-button [button]="photoButton" [stopEvent]="true"></app-button>
           }
-          } @else if (comment()) {
-          <div class="block block--whole block--close block--auto"> {{comment()}} </div>
-          @if(photos().length){
-            <app-button [button]="photoButton" [stopEvent]="true"></app-button>
-          }
-          }
+          } @else {
+            @if(comment()){
+              <div class="block block--whole block--close block--auto"> {{comment()}} </div>
+
+            }
+            @if(photos().length){
+              <app-button [button]="photoButton" [stopEvent]="true"></app-button>
+            }
+
+        }
+
 
         </div>
 
