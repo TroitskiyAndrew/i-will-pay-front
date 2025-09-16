@@ -8,7 +8,7 @@
 @if(stateService.showMembers()){
   <div class="block block--vertical block--vertical-gap block--vertical-borders">
     @for (memberId of this.stateService.memberIds(); track memberId) {
-      <div class="block block--whole ">
+      <div class="block block--whole block--shrink">
         @if(stateService.membersMap().get(memberId)?.userId !== stateService.membersMap().get(memberId)?.payer){
           <div class="block block--whole block--opacity submissive">S</div>
         }
