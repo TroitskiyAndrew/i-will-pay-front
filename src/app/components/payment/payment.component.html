@@ -1,11 +1,12 @@
-<div class="block block--vertical " (click)="toggleShares()">
+<div #paymentElem class="block block--vertical " (click.capture)="toggleShares($event)">
   <div class="block block--whole block--close ">
     <div class="block block--whole block--vertical block--short block--shrink">
-      @if (this.state()?.unchecked || payment()?.payer === this.stateService.user().id && payment()?.amount !==
+      @if (canEdit() || this.state()?.unchecked || payment()?.payer === this.stateService.user().id && payment()?.amount !==
       payment()?.shared) {
         <div class="block block--whole block--vertical block--short">
           <app-button class="block block--whole block--short" [button]="warningButton"></app-button>
           <app-button class="block block--whole block--short" [button]="errorButton"></app-button>
+          <div class="block block--whole block--short block--opacity">W</div>
         </div>
       }
       <div class="block block--whole block--short">

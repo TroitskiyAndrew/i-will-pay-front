@@ -1,4 +1,4 @@
-import { Component, computed, effect, input, output, signal } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, computed, effect, ElementRef, input, OnDestroy, output, signal, ViewChild } from '@angular/core';
 import { StateService } from '../../services/state.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IButton, IPayment, IShare, SocketAction, SocketMessage } from '../../models/models';
@@ -19,7 +19,9 @@ import { getDate, getDateString } from '../../utils/utils';
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.scss'
 })
-export class PaymentComponent {
+export class PaymentComponent implements AfterViewInit, OnDestroy {
+
+  @ViewChild('paymentElem') paymentElem!: ElementRef;
   paymentId = input<string>(NEW_PAYMENT_ID);
   payment = computed(() => this.stateService.paymentsMap().get(this.paymentId()));
   payerName = computed(() => this.stateService.membersMapByUser().get(this.payment()?.payer || '')?.name || '')
@@ -186,6 +188,10 @@ export class PaymentComponent {
     })
   }
 
+  ngAfterViewInit() {
+    this.paymentElem.nativeElement.addEventListener('click', this.toggleSharesFn, { capture: true });
+  }
+
   getPayment(): Omit<IPayment, 'id'> {
     const payment = this.payment();
     return {
@@ -250,10 +256,15 @@ export class PaymentComponent {
     disabled: signal(true),
   }
 
-  toggleShares(){
+  toggleShares(event: Event){
     if (this.stateService.createPaymentMode()){
       return;
     }
+    const target = event.target as HTMLElement;
+    if (target.tagName.toLowerCase() === 'input') {
+      return
+    }
+
     this._editMode.update(val => {
       if(val){
         this.stateService.payments.update(payments => [...payments]);
@@ -261,6 +272,8 @@ export class PaymentComponent {
       return !val
     })
   }
+
+  toggleSharesFn = this.toggleShares.bind(this)
 
   saveButton: IButton = {
     icon: '',
@@ -286,5 +299,9 @@ export class PaymentComponent {
 
   finish(){
     this._editMode.update(val => !val)
+  }
+
+  ngOnDestroy(): void {
+    this.paymentElem.nativeElement.removeEventListener('click', this.toggleSharesFn, { capture: true });
   }
 }

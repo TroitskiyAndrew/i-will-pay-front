@@ -10,9 +10,9 @@
   <div class="block block--whole block--close">
     <div class="block block--auto block--whole"> {{name() || ''}}     </div>
     @if(name()){
-      <app-button class="block block--whole block--short block--last" [button]="editNameButton"></app-button>
+      <app-button class="block block--whole block--short" [button]="editNameButton"></app-button>
     }
   </div>
 }
 
-<div [ngClass]="['block', ' block--close', 'block--short', 'block--last', balance() < 0 ? 'red' : 'green']">{{balance()}}</div>
+<div [ngClass]="['block', ' block--close', 'block--short', 'block--last', 'bold' ,balance() < 0 ? 'red' : 'green']">{{balance()}}</div>
