@@ -159,7 +159,6 @@ export class PaymentComponent {
   done = output<{ payment: IPayment, shares: IShare[] }>()
   showPhoto = signal(false);
 
-
   constructor(public stateService: StateService, private socketService: SocketService, private apiService: ApiService) {
     effect(() => {
       const payment = this.payment()

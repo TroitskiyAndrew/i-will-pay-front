@@ -29,7 +29,7 @@
             <div class="block block--whole block--close block--short"> {{amount()}} </div>
             }
         </div>
-        <div [ngClass]="{'data-1 block block--whole': true, only:  !canEdit() && !this.comment() && !this.photos.length}">
+        <div [ngClass]="{'data-1 block block--whole': true, only:  !canEdit() && !this.comment() && !this.photos().length}">
           <div class="block block--whole block--close block--short"> {{payerName()}} </div>
           @if (canEdit()){
             <input (click)="stopEvent($event)" class="block block--whole block--close block--last input--date" type="date"
@@ -89,12 +89,11 @@
 <div class="block block--vertical block--vertical-gap block--vertical-borders">
   @for (memberId of stateService.memberIds(); track memberId; let isFirst = $first) {
   <app-member-share class="block block--close block--whole" [memberId]="memberId" [sharesMap]="sharesMap()"
-    [isFirst]="isFirst" (changeShare)="onShareChanged()"></app-member-share>
+    [showAccept]="state()?.unchecked || false"  [isFirst]="isFirst" (changeShare)="onShareChanged()"></app-member-share>
   }
 </div>
 <div class="block block--last-vertical ">
   <app-button class="block block--whole block--close" [button]="saveButton"></app-button>
   <app-button class="block block--whole block--close" [button]="cancelButton"></app-button>
-
 </div>
 }

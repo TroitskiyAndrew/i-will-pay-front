@@ -36,7 +36,9 @@
   &--opacity {
     opacity: 0;
   }
-
+  &--button-height {
+    height: 30px;
+  }
 
   &--vertical {
     flex-direction: column;

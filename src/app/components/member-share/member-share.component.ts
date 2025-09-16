@@ -22,6 +22,7 @@ export class MemberShareComponent {
 
   memberId = input<string>('');
   isFirst = input(false);
+  showAccept = input(false);
   sharesMap = input<Map<string, IShare>>(new Map());
   share = computed(() => this.sharesMap().get(this.memberId()));
   isPayer = computed(() => {
@@ -75,6 +76,9 @@ export class MemberShareComponent {
     icon: 'check',
     class: 'square',
     action: () => {
+      if (!this.isUnchecked()){
+        return;
+      }
       const share = this.share()!;
       const userId = this.stateService.user()!.id;
       if(share.paymentPayer === userId && !share.confirmedByPayer){
