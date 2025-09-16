@@ -7,7 +7,7 @@
       </div>
     </div>
   } @else {
-    @if (stateService.createPaymentMode()) {
+    @if (stateService.editPaymentId()) {
       <app-payment class="block block--vertical block--vertical-borders block--whole block--close wrapper" [editModeInput]="true"></app-payment>
     } @else {
       <app-header class="block block--shrink" ></app-header>
@@ -33,7 +33,7 @@
         <app-room-members class="block block--vertical   block--whole"></app-room-members>
         <app-room-payments class="block block--vertical  block--whole"></app-room-payments>
 
-        @if (!this.stateService.createPaymentMode() && this.stateService.currentRoom() != null && !this.stateService.showPayments()) {
+        @if (!this.stateService.editPaymentId() && this.stateService.currentRoom() != null && !this.stateService.showPayments()) {
           <app-button class="block block--last-vertical block--shrink" [button]="createButton"></app-button>
         }
       }

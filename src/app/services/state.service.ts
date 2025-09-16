@@ -50,7 +50,7 @@ export class StateService {
   membersMapByUser = signal<Map<string, IMember>>(new Map());
   usersMap = new Map<string, IUser>()
 
-  createPaymentMode = signal(false);
+  editPaymentId = signal('');
   newPayment = getNewPayment('init');
 
   showDebts = signal<boolean>(false);

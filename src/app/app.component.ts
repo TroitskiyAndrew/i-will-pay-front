@@ -13,6 +13,7 @@ import { UpdateItemComponent } from "./components/update-item/update-item.compon
 import { ApiService } from './services/api.service';
 import { RoomDebtsComponent } from "./components/room-debts/room-debts.component";
 import { Clipboard } from '@angular/cdk/clipboard';
+import { NEW_PAYMENT_ID } from './constants/constants';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +33,7 @@ export class AppComponent {
   createButton: IButton = {
     icon: '',
     content: 'Новый платеж',
-    action: () => this.stateService.createPaymentMode.set(true),
+    action: () => this.stateService.editPaymentId.set(NEW_PAYMENT_ID),
     class: '',
   }
   editGroupNameBUtton: IButton = {

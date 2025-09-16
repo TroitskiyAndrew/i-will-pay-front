@@ -228,7 +228,7 @@ export class PaymentComponent {
     }
 
     this.stateService.newPayment = getNewPayment(this.stateService.user().id);
-    this.stateService.createPaymentMode.set(false);
+    this.stateService.editPaymentId.set('');
   }
 
 
@@ -287,7 +287,7 @@ export class PaymentComponent {
   }
 
   toggleShares() {
-    if (this.stateService.createPaymentMode()) {
+    if (this.stateService.editPaymentId() === NEW_PAYMENT_ID) {
       return;
     }
 
@@ -314,7 +314,7 @@ export class PaymentComponent {
     icon: '',
     content: 'отмена',
     action: () => {
-      this.stateService.createPaymentMode.set(false)
+      this.stateService.editPaymentId.set('')
       this._editMode.set(false);
       this.stateService.payments.update(payments => [...payments]);
     },
