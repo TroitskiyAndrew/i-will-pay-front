@@ -9,13 +9,15 @@
         <img class="block block--whole" [src]="photos()[0]" alt="">
       </div>
     } @else {
-      <div class="block block--whole block--vertical block--short block--shrink">
+      <div class="block block--whole block--vertical block--short block--shrink block--centred">
         @if (canEdit() || this.state()?.unchecked || payment()?.payer === this.stateService.user().id && payment()?.amount !==
         payment()?.shared) {
           <div class="block block--whole block--vertical block--short">
             <app-button class="block block--whole block--short" [button]="warningButton" [stopEvent]="true"></app-button>
             <app-button class="block block--whole block--short" [button]="errorButton" [stopEvent]="true"></app-button>
-            <div class="block block--whole block--short block--opacity">W</div>
+            @if (canEdit()){
+              <div class="block block--whole block--short">Cумма</div>
+            }
           </div>
         }
         <div class="block block--whole block--short">
