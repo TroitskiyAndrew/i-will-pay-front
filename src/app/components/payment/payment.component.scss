@@ -15,9 +15,15 @@
   img{
     width: 100%;
   }
+  .drop,
   .close {
     position: absolute;
     top: 10px;
+  }
+  .drop {
+    left: 10px
+  }
+  .close {
     right: 10px;
   }
 }

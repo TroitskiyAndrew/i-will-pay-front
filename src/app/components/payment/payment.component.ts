@@ -245,6 +245,15 @@ export class PaymentComponent {
     action: () => this.showPhoto.set(false),
     class: 'square square--small',
   }
+  dropFileButton: IButton = {
+    icon: 'delete',
+    action: () => {
+      this.showPhoto.set(false);
+      this.photos.set([])
+    },
+    show: computed(()=> this.payment()?.payer === this.stateService.user().id),
+    class: 'square square--small',
+  }
 
   photoButton: IButton = {
     icon: 'photo',

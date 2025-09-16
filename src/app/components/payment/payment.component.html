@@ -1,11 +1,14 @@
-@if(showPhoto() && photos().length){
-  <div class="photo blcok block--whole">
-    <app-button class="close" [button]="closeFileButton"></app-button>
-    <img class="block block--whole" [src]="photos()[0]" alt="">
-  </div>
-} @else {
-  <div #paymentElem class="block block--vertical " (click)="toggleShares()">
-    <div class="block block--whole block--close ">
+
+
+<div #paymentElem class="block block--vertical " (click)="toggleShares()">
+  <div class="block block--whole block--close ">
+    @if(showPhoto() && photos().length){
+      <div class="photo blcok block--whole">
+        <app-button class="close" [button]="closeFileButton"></app-button>
+        <app-button class="drop" [button]="dropFileButton"></app-button>
+        <img class="block block--whole" [src]="photos()[0]" alt="">
+      </div>
+    } @else {
       <div class="block block--whole block--vertical block--short block--shrink">
         @if (canEdit() || this.state()?.unchecked || payment()?.payer === this.stateService.user().id && payment()?.amount !==
         payment()?.shared) {
@@ -69,21 +72,21 @@
       <div [ngClass]="['block', 'block--whole',  'block--close', 'block--short', 'block--shrink', color()]"> {{balance()}}
       </div>
       }
-    </div>
-
-  </div>
-  @if(editMode()){
-  <div class="block block--vertical block--vertical-gap block--vertical-borders">
-    @for (memberId of stateService.memberIds(); track memberId; let isFirst = $first) {
-    <app-member-share class="block block--close block--whole" [memberId]="memberId" [sharesMap]="sharesMap()"
-      [isFirst]="isFirst" (changeShare)="onShareChanged()"></app-member-share>
     }
-  </div>
-  <div class="block block--last-vertical ">
-    <app-button class="block block--whole block--close" [button]="saveButton"></app-button>
-    <app-button class="block block--whole block--close" [button]="cancelButton"></app-button>
 
   </div>
+
+</div>
+@if(editMode()){
+<div class="block block--vertical block--vertical-gap block--vertical-borders">
+  @for (memberId of stateService.memberIds(); track memberId; let isFirst = $first) {
+  <app-member-share class="block block--close block--whole" [memberId]="memberId" [sharesMap]="sharesMap()"
+    [isFirst]="isFirst" (changeShare)="onShareChanged()"></app-member-share>
   }
+</div>
+<div class="block block--last-vertical ">
+  <app-button class="block block--whole block--close" [button]="saveButton"></app-button>
+  <app-button class="block block--whole block--close" [button]="cancelButton"></app-button>
 
+</div>
 }
