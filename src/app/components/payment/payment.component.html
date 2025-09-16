@@ -87,7 +87,7 @@
 </div>
 @if(editMode()){
 <div class="block block--vertical block--vertical-gap block--vertical-borders">
-  @for (memberId of stateService.memberIds(); track memberId; let isFirst = $first) {
+  @for (memberId of memberIds(); track memberId; let isFirst = $first) {
   <app-member-share class="block block--close block--whole" [memberId]="memberId" [sharesMap]="sharesMap()"
     [showAccept]="state()?.unchecked || false"  [isFirst]="isFirst" (changeShare)="onShareChanged()"></app-member-share>
   }

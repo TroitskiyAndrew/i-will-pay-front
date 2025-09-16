@@ -23,7 +23,14 @@ export class PaymentComponent {
   paymentId = input<string>(NEW_PAYMENT_ID);
   payment = computed(() => this.stateService.paymentsMap().get(this.paymentId()));
   photos = signal<string[]>([]);
-  payerName = computed(() => this.stateService.membersMapByUser().get(this.payment()?.payer || '')?.name || '')
+  payerName = computed(() => {
+    if(this.payment()?.debt && this.payment()?.payer === this.stateService.user().id){
+      const share = [...this.sharesMap().values()].find(share => share.balance > 0);
+      const member = this.stateService.membersMapByUser().get(share.payer);
+      return member?.name || ''
+    }
+    return this.stateService.membersMapByUser().get(this.payment()?.payer || '')?.name || ''
+  })
   state = computed(() => this.stateService.paymentStatesMap().get(this.paymentId()))
   balance = computed(() => this.state()?.balance || 0);
   color = computed(() => {
@@ -40,12 +47,7 @@ export class PaymentComponent {
     }
     if (payment.debt) {
       const isPayer = payment.payer === this.stateService.user().id;
-      if (isPayer) {
-        const share = [...this.sharesMap().values()][0];
-        const member = this.stateService.membersMapByUser().get(share.payer)
-        return `Отдал деньги ${member?.name || ''}`
-      }
-      return `Получил деньги от ${this.payerName()}`
+      return isPayer ? `я отдал` : `дал мне`;
     } else {
       return this.payment()?.comment || ''
     }
@@ -56,6 +58,20 @@ export class PaymentComponent {
   editMode = computed(() => this.editModeInput() || this._editMode());
   canEdit = computed(() => {
     return this.editMode() && (this.editModeInput() || this.payment()?.payer === this.stateService.user().id)
+  })
+  memberIds = computed(() => {
+    let memberIds = this.stateService.memberIds();
+    if(this.canEdit()){
+      return memberIds;
+    }
+    memberIds = [];
+    (this.stateService.shareIdsMapBaPayment().get(this.paymentId()) || []).forEach(shareId => {
+      const share = this.stateService.sharesMap().get(shareId);
+      if(share?.share !== null || share.balance !== null){
+        memberIds.push(this.stateService.membersMapByUser().get(share?.userId!)?.id!)
+      }
+    })
+    return memberIds;
   })
 
   paymentForm = new FormGroup({
@@ -288,6 +304,9 @@ export class PaymentComponent {
 
   toggleShares() {
     if (this.stateService.editPaymentId() === NEW_PAYMENT_ID) {
+      return;
+    }
+    if (this.payment()?.debt) {
       return;
     }
 

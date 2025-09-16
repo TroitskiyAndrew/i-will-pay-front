@@ -125,6 +125,9 @@ export class StateService {
       if (!currentRoom) {
         this.payments.set([]);
         this.members.set([]);
+        this.showDebts.set(false)
+        this.showMembers.set(false)
+        this.showPayments.set(false)
         return;
       }
       const payments = await this.apiService.getPayments(currentRoom.id) || []
