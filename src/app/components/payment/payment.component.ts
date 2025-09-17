@@ -25,8 +25,8 @@ export class PaymentComponent {
   photos = signal<string[]>([]);
   payerName = computed(() => {
     if(this.payment()?.debt && this.payment()?.payer === this.stateService.user().id){
-      const share = [...this.sharesMap().values()].find(share => share.balance > 0);
-      const member = this.stateService.membersMapByUser().get(share.payer);
+      const share = [...this.sharesMap().values()].find(share => share.share !== null || share.amount !== null);
+      const member = this.stateService.membersMapByUser().get(share?.payer || '');
       return member?.name || ''
     }
     return this.stateService.membersMapByUser().get(this.payment()?.payer || '')?.name || ''
