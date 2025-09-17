@@ -225,6 +225,7 @@ export class PaymentComponent {
     const memberIds = this.stateService.memberIds();
     const shares = memberIds.map((memberId) => {
       const member = this.stateService.membersMap().get(memberId)!;
+      this.triggerSharesMap.update(val => +val)
       const share = this.sharesMap().get(memberId)!;
       return {
         ...share,

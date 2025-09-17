@@ -146,7 +146,6 @@ export class MemberShareComponent {
 
       updatedShare.share = null
       updatedShare.amount = balance
-      updatedShare.balance = balance
       this.changeShare.emit(Math.random())
     })
     effect(() => {
