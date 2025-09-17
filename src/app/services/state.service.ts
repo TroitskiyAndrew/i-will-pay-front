@@ -63,7 +63,7 @@ export class StateService {
   constructor(private apiService: ApiService, private socketService: SocketService) {
     effect(async () => {
       const rooms = this.rooms();
-      if(rooms.length === 1){
+      if (rooms.length === 1) {
         this.roomId.set(rooms[0].id)
       }
       this.socketService.init(this.user().id, rooms.map(room => room.id))
@@ -83,10 +83,10 @@ export class StateService {
         return res;
       }, { payers: [] } as ISplittedMembers);
       const usersMap = new Map()
-      members.forEach(async member => {
+      await Promise.all(members.map(async member => {
         const user = await this.apiService.getUser(member.userId);
-          usersMap.set(user!.id, user!)
-      })
+        usersMap.set(user!.id, user!)
+      }))
       this.usersMap.set(usersMap)
       const memberIds: string[] = []
       splittedMembers.payers.forEach(payer => {
@@ -182,7 +182,7 @@ export class StateService {
       this.paymentStatesMap.set(paymentStatesMap);
     });
     effect(() => {
-      if(this.showDebts()){
+      if (this.showDebts()) {
         this.showMembersMenu.set(false)
         this.showPaymentsMenu.set(false)
       } else {
@@ -191,7 +191,7 @@ export class StateService {
       }
     })
     effect(() => {
-      if(this.showMembers()){
+      if (this.showMembers()) {
         this.showDebtsMenu.set(false)
         this.showPaymentsMenu.set(false)
       } else {
@@ -200,7 +200,7 @@ export class StateService {
       }
     })
     effect(() => {
-      if(this.showPayments()){
+      if (this.showPayments()) {
         this.showDebtsMenu.set(false)
         this.showMembersMenu.set(false)
       } else {

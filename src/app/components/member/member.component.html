@@ -3,5 +3,7 @@
       @if (member()?.userId !== stateService.user().id) {
         <app-state-button [button]="submissiveButton" [value]="submissiveAction()"></app-state-button>
       }
-      <app-button [button]="createLinkButton"></app-button>
+      @if (showLink()) {
+        <app-button [button]="createLinkButton"></app-button>
+      }
     </div>

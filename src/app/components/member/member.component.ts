@@ -62,9 +62,13 @@ export class MemberComponent {
   createLinkButton: IButton = {
     icon: 'link',
     action: async () => navigator.clipboard.writeText(`${this.stateService.appLink}?startapp=userId=${this.member()?.userId}`),
-    show: computed(() => this.stateService.usersMap().size > 0 && this.stateService.usersMap().get(this.member()!.userId)?.telegramId == null),
     class: 'square'
   }
+  showLink = computed(() => {
+    const usersMap = this.stateService.usersMap();
+    const user = usersMap.get(this.member()?.userId || '');
+  return user != null && user.telegramId == null
+  })
 
   constructor(public stateService: StateService, private apiService: ApiService) { }
 
