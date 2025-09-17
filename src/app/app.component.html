@@ -34,7 +34,7 @@
         <app-room-members class="block block--vertical   block--whole"></app-room-members>
         <app-room-payments class="block block--vertical  block--whole"></app-room-payments>
 
-        @if (!this.stateService.editPaymentId() && this.stateService.currentRoom() != null && !this.stateService.showPayments()) {
+        @if (!this.stateService.editPaymentId() && this.stateService.currentRoom() != null && (!this.stateService.showPayments() || this.stateService.payments().length === 1)) {
           <app-button class="block block--last-vertical block--shrink" [button]="createButton"></app-button>
         }
       }
