@@ -21,7 +21,7 @@ export class ApiService {
   auth() {
     const url = `${environment.backendUrl}/auth`;
     return this.http
-      .get<{ user: IUser, roomId: string | null }>(url)
+      .get<{ user: IUser, roomId: string | null, paymentId: string | null }>(url)
       .toPromise()
       .catch(this.handleError.bind(this));
   }
@@ -149,14 +149,6 @@ export class ApiService {
     const url = `${environment.backendUrl}/shares/${paymentId}`;
     return this.http
       .get<IShare[]>(url)
-      .toPromise()
-      .catch(this.handleError.bind(this));
-  }
-
-  createShare(share: Omit<IShare, 'id'>) {
-    const url = `${environment.backendUrl}/shares`;
-    return this.http
-      .post<IShare>(url, { share })
       .toPromise()
       .catch(this.handleError.bind(this));
   }

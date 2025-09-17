@@ -336,7 +336,7 @@ export class PaymentComponent {
     content: 'удалить',
     action: () => {
       this.acceptDelete.set(true);
-      setTimeout(() => this.canAcceptDelete.set(true), 3000)
+      setTimeout(() => this.canAcceptDelete.set(true), 1500)
     },
     show: computed(() => this.paymentId() !== NEW_PAYMENT_ID),
     class: '',
@@ -348,6 +348,7 @@ export class PaymentComponent {
     content: 'удалить',
     action: () => {
       this.apiService.deletePayment(this.paymentId());
+      this._editMode.set(false)
       this.acceptDelete.set(false);
       this.canAcceptDelete.set(false);
     },

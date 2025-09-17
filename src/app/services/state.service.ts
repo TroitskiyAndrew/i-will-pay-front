@@ -483,9 +483,10 @@ export class StateService {
 
   async init() {
     const auth = await this.apiService.auth()
-    const { user, roomId } = auth!;
+    const { user, roomId, paymentId } = auth!;
     this.user.set(user);
     this.roomId.set(roomId || '');
+    this.editPaymentId.set(paymentId || '')
     const rooms = await this.apiService.getRooms() || [];
     console.log('rooms', rooms)
     this.rooms.set(rooms);
