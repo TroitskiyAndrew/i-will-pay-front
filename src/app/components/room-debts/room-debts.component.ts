@@ -17,7 +17,7 @@ import { DebtComponent } from "../debt/debt.component";
 })
 export class RoomDebtsComponent {
 
-  balance = computed(() => this.stateService.totalState().balance);
+  balance = computed(() => this.stateService.roomStatesMap().get(this.stateService.roomId())?.balance || 0);
   debts = computed(()=> this.stateService.roomStatesMap().get(this.stateService.roomId())?.debts || [])
   expandButton: IButton = {
     icon: 'expand_more',
