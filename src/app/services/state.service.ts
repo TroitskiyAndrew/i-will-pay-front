@@ -48,7 +48,7 @@ export class StateService {
   memberIds = signal<string[]>([])
   membersMap = signal<Map<string, IMember>>(new Map());
   membersMapByUser = signal<Map<string, IMember>>(new Map());
-  usersMap = new Map<string, IUser>()
+  usersMap = signal<Map<string, IUser>>(new Map())
 
   editPaymentId = signal('');
   newPayment = getNewPayment('init');
@@ -82,12 +82,12 @@ export class StateService {
         }
         return res;
       }, { payers: [] } as ISplittedMembers);
+      const usersMap = new Map()
       members.forEach(async member => {
-        if(!this.usersMap.has(member.userId)){
-          const user = await this.apiService.getUser(member.userId);
-          this.usersMap.set(user!.id, user!)
-        }
+        const user = await this.apiService.getUser(member.userId);
+          usersMap.set(user!.id, user!)
       })
+      this.usersMap.set(usersMap)
       const memberIds: string[] = []
       splittedMembers.payers.forEach(payer => {
         memberIds.push(payer)
