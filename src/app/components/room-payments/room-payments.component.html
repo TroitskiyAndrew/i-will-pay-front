@@ -14,7 +14,7 @@
   <div [ngClass]="{'block block--vertical block--vertical-gap': true, 'block--vertical-borders': !stateService.showPayments()}">
     @for (paymentId of displayPayments(); track paymentId) {
       @if(paymentId !== newPaymentId){
-        <app-payment class="block block--vertical block--bordered block--whole block--close"  [paymentId]="paymentId" [editModeInput]="false"></app-payment>
+        <app-payment class="block block--vertical block--bordered block--whole block--close"  [paymentId]="paymentId"></app-payment>
       }
     }
 

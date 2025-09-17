@@ -53,11 +53,10 @@ export class PaymentComponent {
     }
   });
   date = computed(() => this.payment()?.date || '');
-  editModeInput = input(false);
   _editMode = signal(false);
-  editMode = computed(() => this.editModeInput() || this._editMode());
+  editMode = computed(() => Boolean(this.stateService.editPaymentId()) || this._editMode());
   canEdit = computed(() => {
-    return this.editMode() && (this.editModeInput() || this.payment()?.payer === this.stateService.user().id)
+    return this.editMode() && this.payment()?.payer === this.stateService.user().id
   })
   memberIds = computed(() => {
     let memberIds = this.stateService.memberIds();

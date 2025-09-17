@@ -8,7 +8,7 @@
     </div>
   } @else {
     @if (stateService.editPaymentId()) {
-      <app-payment class="block block--vertical block--vertical-borders block--whole block--close wrapper" [editModeInput]="true" [paymentId]="stateService.editPaymentId()"></app-payment>
+      <app-payment class="block block--vertical block--vertical-borders block--whole block--close wrapper" [paymentId]="stateService.editPaymentId()"></app-payment>
     } @else {
       <app-header class="block block--shrink" ></app-header>
       @if(!this.stateService.currentRoom()){
