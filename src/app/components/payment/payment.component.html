@@ -12,7 +12,7 @@
       <div class="grid">
         <div class="indicators block block--whole block--short">
           @if (canEdit() || hasIndicators()) {
-            <div class="block block--whole block--short">
+            <div class="block block--whole block--short block--tight">
               <app-button class="block block--whole block--short" [button]="warningButton" [stopEvent]="true"></app-button>
               <app-button class="block block--whole block--short" [button]="errorButton" [stopEvent]="true"></app-button>
               @if (!hasIndicators()){
