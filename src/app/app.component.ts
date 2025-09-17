@@ -14,10 +14,11 @@ import { ApiService } from './services/api.service';
 import { RoomDebtsComponent } from "./components/room-debts/room-debts.component";
 import { Clipboard } from '@angular/cdk/clipboard';
 import { NEW_PAYMENT_ID } from './constants/constants';
+import { StateButtonComponent } from "./components/state-button/state-button.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RoomMembersComponent, UserRoomsComponent, RoomPaymentsComponent, ButtonComponent, PaymentComponent, HeaderComponent, UpdateItemComponent, RoomDebtsComponent],
+  imports: [RoomMembersComponent, UserRoomsComponent, RoomPaymentsComponent, ButtonComponent, PaymentComponent, HeaderComponent, UpdateItemComponent, RoomDebtsComponent, StateButtonComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -47,6 +48,25 @@ export class AppComponent {
     action: async () => navigator.clipboard.writeText(this.stateService.roomLink()),
     class: 'square'
   }
+  muteValue = computed(() => {
+    return this.stateService.membersMapByUser().get(this.stateService.user().id)?.mute || false
+  })
+  muteButton: IButton = {
+    icon: 'link',
+    action: () => {
+      const member = this.stateService.membersMapByUser().get(this.stateService.user().id);
+      if(member) {
+        member.mute = !member.mute;
+        this.apiService.updateMember(member)
+      }
+    },
+    class: 'square',
+    statesMapFn: () => new Map([
+      [true, { stateClass: 'black white-content', icon: 'volume_mute' }],
+      [false, { stateClass: 'black white-content', icon: 'volume_up' }],
+    ]),
+  }
+
 
   constructor(public stateService: StateService, public errorService: ErrorService, private apiService: ApiService, public clipboard: Clipboard){
     this.stateService.init()

@@ -28,6 +28,7 @@ export interface IMember {
   grantedBy: string | null;
   isGuest: boolean;
   payer: string;
+  mute?: boolean
 }
 
 export interface IUser {
