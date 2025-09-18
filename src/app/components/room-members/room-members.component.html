@@ -16,6 +16,6 @@
         <app-member class="block block--close block--bordered block--shrink-1" [memberId]="memberId"></app-member>
       </div>
     }
-    <app-new-item class="block block--close block--bordered" (newItem)="createMember($event)"></app-new-item>
+    <app-new-item class="block block--close block--bordered" (newItem)="createMember($event)" [placeholder]="'новый участник'"></app-new-item>
   </div>
 }

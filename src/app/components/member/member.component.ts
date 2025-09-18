@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { StateService } from '../../services/state.service';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,10 +23,30 @@ export class MemberComponent {
     const member = this.member();
     const userMember = this.userMember();
     return userMember?.payer === member?.userId ? false : member?.payer !== userMember?.userId
-  })
+  });
+  submissiveQuestion = computed(() => {
+    const member = this.member();
+    const userMember = this.userMember();
+    if(userMember?.payer === member?.userId){
+      return 'перестанет платить за меня'
+    }
+    return member?.payer !== userMember?.userId ? `платить за ${member?.name}?` : `перестать платить за ${member?.name}?`
+  });
+  editSubmissive = signal(false)
 
   submissiveButton: IButton = {
     icon: 'add',
+    action: () => this.editSubmissive.set(true),
+    show: computed(() => this.member()?.userId !== this.stateService.user().id),
+    class: 'square',
+    statesMapFn: () => new Map([
+      [false, { stateClass: 'black', icon: 'group_off' }],
+      [true, { stateClass: 'black', icon: 'group' }],
+    ]),
+  }
+
+  acceptSubmissiveButton : IButton = {
+    icon: 'check',
     action: () => {
       let member = this.member()!;
       const userMember = this.userMember()!;
@@ -50,13 +70,14 @@ export class MemberComponent {
       membersToChange.forEach(member => {
         this.apiService.updateMember(member)
       })
+      this.editSubmissive.set(false)
     },
-    show: computed(() => this.member()?.userId !== this.stateService.user().id),
-    class: 'square',
-    statesMapFn: () => new Map([
-      [false, { stateClass: 'black', icon: 'group_off' }],
-      [true, { stateClass: 'black', icon: 'group' }],
-    ]),
+    class: 'square square--small',
+  }
+  declineSubmissiveButton : IButton = {
+    icon: 'cancel',
+    action: () => this.editSubmissive.set(false),
+    class: 'square square--small',
   }
 
   createLinkButton: IButton = {

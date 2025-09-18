@@ -1,4 +1,4 @@
-import { Component, computed, effect, output, signal } from '@angular/core';
+import { Component, computed, effect, input, output, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +14,7 @@ import { IButton } from '../../models/models';
 })
 export class NewItemComponent {
   control = new FormControl('', {nonNullable: true, validators: [Validators.required]});
+  placeholder = input('')
   newItem = output<string>();
   controlChange = toSignal(this.control.valueChanges);
   createButton: IButton = {

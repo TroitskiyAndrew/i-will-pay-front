@@ -1,9 +1,21 @@
-<div [ngClass]="{'member block block--whole block--close block--auto': true, 'my-self': member()?.id === userMember()?.id}">{{member()?.name}}</div>
-    <div class="block block--whole block--short block--last block--close">
-      @if (member()?.userId !== stateService.user().id) {
-        <app-state-button [button]="submissiveButton" [value]="submissiveAction()"></app-state-button>
-      }
-      @if (showLink()) {
-        <app-button [button]="createLinkButton"></app-button>
-      }
+@if (editSubmissive()) {
+  <div
+    class="member block block--whole block--auto">
+    {{submissiveQuestion()}}</div>
+    <div class="block block--whole block--close block--shrink block--short block--last">
+      <app-button [button]="acceptSubmissiveButton"></app-button>
+      <app-button [button]="declineSubmissiveButton"></app-button>
     </div>
+} @else {
+  <div
+    [ngClass]="{'member block block--whole block--close block--auto': true, 'my-self': member()?.id === userMember()?.id}">
+    {{member()?.name}}</div>
+  <div class="block block--whole block--short block--last block--close">
+    @if (member()?.userId !== stateService.user().id) {
+    <app-state-button [button]="submissiveButton" [value]="submissiveAction()"></app-state-button>
+    }
+    @if (showLink()) {
+    <app-button [button]="createLinkButton"></app-button>
+    }
+  </div>
+}
