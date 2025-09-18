@@ -1,5 +1,5 @@
 @if(this.state()?.unchecked || this.state()?.hasUnsharedPayment){
-  <div class="block block--tight block--short">
+  <div class="block block--tight block--short block--whole">
     <app-button class="block  block--short block--whole" [button]="warningButton"></app-button>
     <app-button class="block  block--short block--whole" [button]="errorButton"></app-button>
   </div>
@@ -7,4 +7,4 @@
 }
 
 <div class="block  block--auto block--whole"> {{room()?.name || ''}}</div>
-<div [ngClass]="['block',  'block--short', 'block--last', (state()?.balance || 0 )< 0 ? 'red' : 'green']"> {{state()?.balance}}</div>
+<div [ngClass]="['block',  'block--short', 'block--last', 'block--whole', (state()?.balance || 0 )< 0 ? 'red' : 'green']"> {{state()?.balance}}</div>

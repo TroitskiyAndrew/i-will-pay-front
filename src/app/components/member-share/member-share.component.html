@@ -40,6 +40,6 @@
 </div>
 
 @if(showAccept()){
-  <app-button [ngClass]="{'block block--whole block--close block--short check': true, 'block--opacity': !isUnchecked()}" [button]="acceptButton"></app-button>
+  <app-button [ngClass]="{'block block--whole block--close block--short': true, 'block--opacity': !isUnchecked(), check: isFirst()}" [button]="acceptButton"></app-button>
 }
 
