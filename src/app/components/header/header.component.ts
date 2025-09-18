@@ -23,7 +23,6 @@ export class HeaderComponent {
   editNameButton: IButton = {
     icon: 'edit',
     action: () => this.editNameMode.set(true),
-    show: computed(() => !this.stateService.membersMapByUser().get(this.stateService.user().id)?.isGuest),
     class: 'square border-less white-content'
   }
 
