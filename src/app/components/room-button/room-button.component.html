@@ -6,5 +6,5 @@
 
 }
 
-<div class="block  block--auto"> {{room()?.name || ''}}</div>
+<div class="block  block--auto block--whole"> {{room()?.name || ''}}</div>
 <div [ngClass]="['block',  'block--short', 'block--last', (state()?.balance || 0 )< 0 ? 'red' : 'green']"> {{state()?.balance}}</div>

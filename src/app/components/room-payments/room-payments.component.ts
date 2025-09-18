@@ -68,7 +68,10 @@ export class RoomPaymentsComponent {
     const filterByErrors =  this.filterByErrors();
     const paymentIds = this.stateService.paymentIds();
     const filtered =  paymentIds.filter(paymentId => {
-      const payment = this.stateService.paymentsMap().get(paymentId)
+      const payment = this.stateService.paymentsMap().get(paymentId);
+      if(payment?.roomId !== this.stateService.roomId()){
+        return false
+      }
       const state = this.stateService.paymentStatesMap().get(paymentId);
       if(filterByWarnings && state?.unchecked){
         return true;
